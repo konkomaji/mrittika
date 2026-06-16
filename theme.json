@@ -41,13 +41,13 @@
 			"fontFamilies": [
 				{
 					"slug": "display",
-					"name": "Display",
-					"fontFamily": "\"Georgia\", \"Times New Roman\", \"Noto Serif Bengali\", serif"
+					"name": "Display (Poppins)",
+					"fontFamily": "\"Poppins\", system-ui, -apple-system, \"Segoe UI\", Roboto, \"Noto Sans Bengali\", sans-serif"
 				},
 				{
 					"slug": "body",
-					"name": "Body",
-					"fontFamily": "system-ui, -apple-system, \"Segoe UI\", Roboto, \"Noto Sans Bengali\", Helvetica, Arial, sans-serif"
+					"name": "Body (Inter)",
+					"fontFamily": "\"Inter\", system-ui, -apple-system, \"Segoe UI\", Roboto, \"Noto Sans Bengali\", Helvetica, Arial, sans-serif"
 				},
 				{
 					"slug": "mono",
@@ -82,7 +82,18 @@
 			"radius": true,
 			"style": true,
 			"width": true
-		}
+		},
+		"shadow": {
+			"defaultPresets": false,
+			"presets": [
+				{ "slug": "sm", "name": "Small", "shadow": "0 1px 2px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.10)" },
+				{ "slug": "md", "name": "Medium", "shadow": "0 2px 6px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.08)" },
+				{ "slug": "lg", "name": "Large", "shadow": "0 8px 24px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.08)" },
+				{ "slug": "xl", "name": "Expressive", "shadow": "0 16px 48px rgba(0,0,0,0.16), 0 6px 16px rgba(0,0,0,0.10)" }
+			]
+		},
+		"dimensions": { "minHeight": true, "aspectRatio": true },
+		"position": { "sticky": true }
 	},
 	"styles": {
 		"color": {

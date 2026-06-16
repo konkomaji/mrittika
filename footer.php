@@ -62,7 +62,7 @@
 
 			<div class="site-info">
 				<?php
-				$footer_text = get_theme_mod( 'mrittika_footer_text' );
+				$footer_text = mrittika_get_option( 'footer_text', '' );
 				if ( $footer_text ) {
 					echo wp_kses_post( $footer_text );
 				} else {
@@ -75,6 +75,10 @@
 				}
 				?>
 			</div>
+
+			<a class="concept-credit" href="https://www.linkedin.com/in/konkomaji/" target="_blank" rel="noopener noreferrer" aria-label="<?php esc_attr_e( 'A concept by Konko Maji — opens LinkedIn', 'mrittika' ); ?>">
+				<?php esc_html_e( 'A concept by Konko Maji', 'mrittika' ); ?>
+			</a>
 		</div>
 
 	</footer><!-- #colophon -->

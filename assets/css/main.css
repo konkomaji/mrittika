@@ -330,8 +330,63 @@ input:focus, textarea:focus, select:focus { border-color: var(--color-on-surface
 	.result-thumb img { width: 100%; height: auto; aspect-ratio: 16/9; }
 }
 
+/* ============ 14. ADS (AdSense) ============ */
+.mrittika-ad { margin: var(--space-5) auto; max-width: var(--content-width); text-align: center; }
+.mrittika-ad .ad-label { display: block; font-size: 10px; letter-spacing: var(--tracking-wide); text-transform: uppercase; color: var(--color-on-surface-faint); margin-bottom: var(--space-2); }
+.mrittika-ad .ad-inner { min-height: 1px; overflow: hidden; }
+.mrittika-ad--leadeboard, .mrittika-ad--leaderboard { max-width: var(--wide-width); padding-block: var(--space-3); }
+.mrittika-ad--sidebar { margin: 0 0 var(--space-5); max-width: 100%; }
+.mrittika-ad--in-content, .mrittika-ad--after-post { padding: var(--space-3) 0; border-block: var(--border-hair); }
+
+/* ============ 15. TABLE OF CONTENTS ============ */
+.toc { max-width: var(--content-width); margin: 0 auto var(--space-5); background: var(--color-surface-container); border: var(--border-hair); border-radius: var(--shape-lg); overflow: hidden; }
+.toc-toggle { display: flex; width: 100%; align-items: center; justify-content: space-between; gap: var(--space-2); padding: var(--space-3) var(--space-4); background: transparent; border: 0; cursor: pointer; font-family: var(--font-display); font-weight: 600; color: var(--color-on-surface); }
+.toc-toggle svg { transition: transform var(--dur-med) var(--ease-emphasized); }
+.toc[data-collapsed="true"] .toc-toggle svg { transform: rotate(-90deg); }
+.toc-list { list-style: none; margin: 0; padding: 0 var(--space-4) var(--space-3); counter-reset: toc; transition: max-height var(--dur-med) var(--ease-emphasized); }
+.toc[data-collapsed="true"] .toc-list { display: none; }
+.toc-item { padding: 0.25em 0; }
+.toc-item a { text-decoration: none; color: var(--color-on-surface-variant); font-size: var(--text-sm); border-left: 2px solid transparent; padding-left: 0.6em; transition: color var(--dur-fast), border-color var(--dur-fast); }
+.toc-item a:hover, .toc-item.is-active a { color: var(--color-on-surface); border-left-color: var(--color-on-surface); }
+.toc-level-3 { padding-left: var(--space-3); }
+
+/* ============ 16. BACK TO TOP (M3 FAB) ============ */
+.back-to-top { position: fixed; right: var(--space-4); bottom: var(--space-4); z-index: 90; width: 48px; height: 48px; display: inline-flex; align-items: center; justify-content: center; background: var(--color-surface-inverse); color: var(--color-on-inverse); border: 0; border-radius: var(--shape-lg); box-shadow: var(--shadow-lg); cursor: pointer; opacity: 0; transform: translateY(16px) scale(0.9); pointer-events: none; transition: opacity var(--dur-med) var(--ease-emphasized), transform var(--dur-med) var(--ease-spring); }
+.back-to-top.is-visible { opacity: 1; transform: none; pointer-events: auto; }
+.back-to-top:hover { transform: translateY(-2px); }
+
+/* Copy-link feedback */
+.copy-link { background: transparent; cursor: pointer; }
+.copy-link.copied { background: var(--color-on-surface); color: var(--color-surface); }
+
+/* ============ 17. CARD STYLE VARIANTS (settings) ============ */
+.card-style-soft .card-media { box-shadow: var(--shadow-sm); }
+.card-style-soft .post-card:hover .card-media { box-shadow: var(--shadow-md); }
+.card-style-outline .card-media { border: var(--border-hair); }
+.card-style-outline .card-media, .card-style-flat .card-media { box-shadow: none; }
+.card-style-flat .card-media { border-radius: var(--shape-sm); }
+
+/* ============ 18. M3 BLOCK STYLE VARIATIONS ============ */
+.wp-block-group.is-style-m3-card { background: var(--color-surface-container); border-radius: var(--shape-xl); padding: var(--space-4); box-shadow: var(--shadow-md); }
+.wp-block-group.is-style-m3-outline { border: var(--border-strong); border-radius: var(--shape-xl); padding: var(--space-4); }
+.wp-block-image.is-style-m3-rounded img { border-radius: var(--shape-2xl); }
+.wp-block-button.is-style-m3-tonal .wp-block-button__link { background: var(--color-surface-container-high); color: var(--color-on-surface); }
+.wp-block-button.is-style-m3-text .wp-block-button__link { background: transparent; color: var(--color-on-surface); padding-inline: 0.5em; text-decoration: underline; }
+.wp-block-quote.is-style-m3-pull { border: 0; text-align: center; font-size: var(--text-xl); max-width: 100%; }
+.wp-block-separator.is-style-m3-dotted { border: 0; border-top: 2px dotted var(--color-outline-strong); background: none; }
+.wp-block-list.is-style-m3-checklist { list-style: none; padding-left: 0; }
+.wp-block-list.is-style-m3-checklist li { position: relative; padding-left: 1.8em; margin-bottom: 0.5em; }
+.wp-block-list.is-style-m3-checklist li::before { content: ""; position: absolute; left: 0; top: 0.35em; width: 1.1em; height: 1.1em; border: 2px solid var(--color-on-surface); border-radius: var(--shape-xs); background: linear-gradient(135deg, transparent 45%, var(--color-on-surface) 45%, var(--color-on-surface) 55%, transparent 55%); }
+
+/* ============ 19. CONCEPT CREDIT ============ */
+.concept-credit { margin-left: auto; align-self: center; font-size: var(--text-xs); color: var(--color-on-surface-faint); text-decoration: none; letter-spacing: 0.02em; border: var(--border-hair); padding: 0.35em 0.9em; border-radius: var(--shape-pill); transition: all var(--dur-fast) var(--ease-standard); white-space: nowrap; }
+.concept-credit:hover { background: var(--color-on-surface); color: var(--color-surface); border-color: var(--color-on-surface); }
+
+/* View Transitions (progressive enhancement) */
+@view-transition { navigation: auto; }
+
 /* Print */
 @media print {
-	.site-header, .site-footer, .post-nav, .related-posts, .comments-area, .entry-share, .header-actions, .breadcrumbs { display: none; }
+	.site-header, .site-footer, .post-nav, .related-posts, .comments-area, .entry-share, .header-actions, .breadcrumbs, .mrittika-ad, .back-to-top, .toc, .reading-progress, .concept-credit { display: none; }
 	body { color: #000; background: #fff; }
 }

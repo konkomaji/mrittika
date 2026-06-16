@@ -10,7 +10,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'MRITTIKA_VERSION', '1.0.0' );
+define( 'MRITTIKA_VERSION', '1.1.0' );
 define( 'MRITTIKA_DIR', get_template_directory() );
 define( 'MRITTIKA_URI', get_template_directory_uri() );
 
@@ -18,6 +18,7 @@ define( 'MRITTIKA_URI', get_template_directory_uri() );
  * Load theme modules.
  */
 $mrittika_includes = array(
+	'/inc/options.php',        // Central options store + get/sanitize helpers.
 	'/inc/setup.php',          // Theme supports, menus, image sizes.
 	'/inc/enqueue.php',        // Styles & scripts.
 	'/inc/template-tags.php',  // Reusable display helpers.
@@ -25,8 +26,12 @@ $mrittika_includes = array(
 	'/inc/breadcrumbs.php',    // Accessible breadcrumb trail + schema.
 	'/inc/seo.php',            // SEO meta (auto-disables under Yoast/Rank Math).
 	'/inc/schema.php',         // JSON-LD structured data.
-	'/inc/customizer.php',     // Theme options.
-	'/inc/widgets.php',        // Sidebar / footer widget areas.
+	'/inc/blocks.php',         // Block style variations + patterns.
+	'/inc/security.php',       // Security headers & hardening.
+	'/inc/ads.php',            // Google AdSense integration.
+	'/inc/customizer.php',     // Customizer live-preview options.
+	'/inc/widgets.php',        // Sidebar / footer / ad widget areas.
+	'/inc/admin/settings.php', // Dedicated theme settings dashboard.
 );
 
 foreach ( $mrittika_includes as $mrittika_file ) {

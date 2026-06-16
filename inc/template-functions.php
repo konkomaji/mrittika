@@ -23,6 +23,7 @@ function mrittika_body_classes( $classes ) {
 		$classes[] = 'has-hero';
 	}
 	$classes[] = 'mrittika';
+	$classes[] = 'card-style-' . sanitize_html_class( mrittika_get_option( 'card_style', 'soft' ) );
 	return $classes;
 }
 add_filter( 'body_class', 'mrittika_body_classes' );
@@ -77,12 +78,35 @@ function mrittika_head_cleanup() {
 	remove_action( 'wp_head', 'wp_shortlink_wp_head' );
 	remove_action( 'wp_head', 'wlwmanifest_link' );
 	remove_action( 'wp_head', 'rsd_link' );
-	remove_action( 'wp_head', 'print_emoji_detection_script', 7 );
-	remove_action( 'wp_print_styles', 'print_emoji_styles' );
-	remove_action( 'admin_print_scripts', 'print_emoji_detection_script' );
-	remove_action( 'admin_print_styles', 'print_emoji_styles' );
+
+	if ( mrittika_get_option( 'remove_emoji', true ) ) {
+		remove_action( 'wp_head', 'print_emoji_detection_script', 7 );
+		remove_action( 'wp_print_styles', 'print_emoji_styles' );
+		remove_action( 'admin_print_scripts', 'print_emoji_detection_script' );
+		remove_action( 'admin_print_styles', 'print_emoji_styles' );
+		add_filter( 'tiny_mce_plugins', function ( $plugins ) {
+			return is_array( $plugins ) ? array_diff( $plugins, array( 'wpemoji' ) ) : $plugins;
+		} );
+	}
 }
 add_action( 'init', 'mrittika_head_cleanup' );
+
+/**
+ * Lazy-load iframes (oEmbeds etc.) when enabled.
+ */
+function mrittika_lazy_iframes( $content ) {
+	if ( is_admin() || ! mrittika_get_option( 'lazy_iframes', true ) ) {
+		return $content;
+	}
+	if ( false === strpos( $content, '<iframe' ) ) {
+		return $content;
+	}
+	return preg_replace_callback( '/<iframe(?![^>]*\bloading=)([^>]*)>/i', function ( $m ) {
+		return '<iframe loading="lazy"' . $m[1] . '>';
+	}, $content );
+}
+add_filter( 'the_content', 'mrittika_lazy_iframes', 25 );
+add_filter( 'embed_oembed_html', 'mrittika_lazy_iframes', 25 );
 
 /**
  * Add width/height-friendly responsive image sizes attribute for content images.

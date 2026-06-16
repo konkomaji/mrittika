@@ -34,8 +34,8 @@ if ( ! function_exists( 'mrittika_seo_plugin_active' ) ) {
  * Output meta description, canonical, and Open Graph / Twitter tags.
  */
 function mrittika_seo_meta() {
-	if ( mrittika_seo_plugin_active() ) {
-		return; // SEO plugin handles everything.
+	if ( mrittika_seo_plugin_active() || ! mrittika_get_option( 'seo_enable', true ) ) {
+		return; // SEO plugin handles everything, or built-in SEO disabled.
 	}
 
 	$desc      = mrittika_meta_description();
@@ -85,6 +85,11 @@ function mrittika_seo_meta() {
 
 	// Twitter / X.
 	printf( '<meta name="twitter:card" content="%s">' . "\n", $image ? 'summary_large_image' : 'summary' );
+	$tw = mrittika_get_option( 'twitter_site', '' );
+	if ( $tw ) {
+		$tw = '@' . ltrim( $tw, '@' );
+		printf( '<meta name="twitter:site" content="%s">' . "\n", esc_attr( $tw ) );
+	}
 	printf( '<meta name="twitter:title" content="%s">' . "\n", esc_attr( $title ) );
 	if ( $desc ) {
 		printf( '<meta name="twitter:description" content="%s">' . "\n", esc_attr( $desc ) );
@@ -164,7 +169,10 @@ if ( ! function_exists( 'mrittika_share_image' ) ) {
 				return $img[0];
 			}
 		}
-		$custom = get_theme_mod( 'mrittika_default_share_image' );
+		$custom = mrittika_get_option( 'default_share_image', '' );
+		if ( ! $custom ) {
+			$custom = get_theme_mod( 'mrittika_default_share_image' );
+		}
 		return $custom ? $custom : '';
 	}
 }

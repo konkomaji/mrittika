@@ -99,7 +99,12 @@
 	</header><!-- #masthead -->
 
 	<?php
-	if ( ! is_front_page() ) {
+	/** Fires right after the site header — used for the leaderboard ad slot. */
+	do_action( 'mrittika_after_header' );
+	?>
+
+	<?php
+	if ( ! is_front_page() && mrittika_get_option( 'show_breadcrumbs', true ) ) {
 		echo '<div class="wrap breadcrumbs-wrap">';
 		mrittika_breadcrumbs();
 		echo '</div>';

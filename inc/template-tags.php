@@ -71,8 +71,10 @@ if ( ! function_exists( 'mrittika_entry_meta' ) ) {
 		mrittika_posted_by();
 		echo '<span class="meta-sep" aria-hidden="true">·</span>';
 		mrittika_posted_on();
-		echo '<span class="meta-sep" aria-hidden="true">·</span>';
-		echo '<span class="reading-time">' . esc_html( mrittika_reading_time() ) . '</span>';
+		if ( ! function_exists( 'mrittika_get_option' ) || mrittika_get_option( 'show_reading_time', true ) ) {
+			echo '<span class="meta-sep" aria-hidden="true">·</span>';
+			echo '<span class="reading-time">' . esc_html( mrittika_reading_time() ) . '</span>';
+		}
 		echo '</div>';
 	}
 }
@@ -127,6 +129,91 @@ if ( ! function_exists( 'mrittika_post_thumbnail' ) ) {
 			);
 		}
 	}
+}
+
+if ( ! function_exists( 'mrittika_table_of_contents' ) ) {
+	/**
+	 * Auto-generated table of contents from h2/h3 in the post content.
+	 * Adds anchor ids to the headings and renders a collapsible nav.
+	 * Only shows when the post has at least 3 headings.
+	 */
+	function mrittika_table_of_contents() {
+		$content = get_the_content();
+		if ( ! $content ) {
+			return;
+		}
+		if ( ! preg_match_all( '/<h([23])[^>]*>(.*?)<\/h\1>/is', $content, $m, PREG_SET_ORDER ) ) {
+			return;
+		}
+		$items = array();
+		$seen  = array();
+		foreach ( $m as $h ) {
+			$text = trim( wp_strip_all_tags( $h[2] ) );
+			if ( '' === $text ) {
+				continue;
+			}
+			$slug = sanitize_title( $text );
+			if ( isset( $seen[ $slug ] ) ) {
+				$seen[ $slug ]++;
+				$slug .= '-' . $seen[ $slug ];
+			} else {
+				$seen[ $slug ] = 1;
+			}
+			$items[] = array( 'level' => (int) $h[1], 'text' => $text, 'slug' => $slug );
+		}
+		if ( count( $items ) < 3 ) {
+			return;
+		}
+		?>
+		<nav class="toc" aria-label="<?php esc_attr_e( 'Table of contents', 'mrittika' ); ?>" data-toc>
+			<button class="toc-toggle" type="button" aria-expanded="true">
+				<span class="toc-title"><?php esc_html_e( 'In this article', 'mrittika' ); ?></span>
+				<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+			</button>
+			<ol class="toc-list">
+				<?php foreach ( $items as $item ) : ?>
+					<li class="toc-item toc-level-<?php echo (int) $item['level']; ?>">
+						<a href="#<?php echo esc_attr( $item['slug'] ); ?>"><?php echo esc_html( $item['text'] ); ?></a>
+					</li>
+				<?php endforeach; ?>
+			</ol>
+		</nav>
+		<?php
+	}
+}
+
+if ( ! function_exists( 'mrittika_add_heading_ids' ) ) {
+	/**
+	 * Add matching anchor ids to h2/h3 in the rendered content so TOC links resolve.
+	 *
+	 * @param string $content Post content.
+	 * @return string
+	 */
+	function mrittika_add_heading_ids( $content ) {
+		if ( ! is_singular( 'post' ) || ! in_the_loop() || ! is_main_query() ) {
+			return $content;
+		}
+		$seen = array();
+		return preg_replace_callback(
+			'/<h([23])([^>]*)>(.*?)<\/h\1>/is',
+			function ( $h ) use ( &$seen ) {
+				$text = trim( wp_strip_all_tags( $h[3] ) );
+				if ( '' === $text || strpos( $h[2], 'id=' ) !== false ) {
+					return $h[0];
+				}
+				$slug = sanitize_title( $text );
+				if ( isset( $seen[ $slug ] ) ) {
+					$seen[ $slug ]++;
+					$slug .= '-' . $seen[ $slug ];
+				} else {
+					$seen[ $slug ] = 1;
+				}
+				return '<h' . $h[1] . $h[2] . ' id="' . esc_attr( $slug ) . '">' . $h[3] . '</h' . $h[1] . '>';
+			},
+			$content
+		);
+	}
+	add_filter( 'the_content', 'mrittika_add_heading_ids', 8 );
 }
 
 if ( ! function_exists( 'mrittika_pagination' ) ) {

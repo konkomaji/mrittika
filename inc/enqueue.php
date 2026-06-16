@@ -15,6 +15,17 @@ if ( ! defined( 'ABSPATH' ) ) {
 function mrittika_enqueue_assets() {
 	$ver = MRITTIKA_VERSION;
 
+	// Webfonts: Poppins (display) + Inter (body), loaded with display=swap.
+	// Can be disabled in Mrittika settings to fall back to the system stack (privacy / speed).
+	if ( mrittika_get_option( 'enable_webfonts', true ) ) {
+		wp_enqueue_style(
+			'mrittika-fonts',
+			'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700&display=swap',
+			array(),
+			null
+		);
+	}
+
 	// Design tokens first, then main stylesheet (cascade order matters).
 	wp_enqueue_style( 'mrittika-tokens', MRITTIKA_URI . '/assets/css/material-tokens.css', array(), $ver );
 	wp_enqueue_style( 'mrittika-main', MRITTIKA_URI . '/assets/css/main.css', array( 'mrittika-tokens' ), $ver );
@@ -26,8 +37,10 @@ function mrittika_enqueue_assets() {
 	wp_enqueue_script( 'mrittika-theme', MRITTIKA_URI . '/assets/js/theme.js', array(), $ver, true );
 	wp_enqueue_script( 'mrittika-navigation', MRITTIKA_URI . '/assets/js/navigation.js', array(), $ver, true );
 
-	wp_script_add_data( 'mrittika-theme', 'strategy', 'defer' );
-	wp_script_add_data( 'mrittika-navigation', 'strategy', 'defer' );
+	if ( mrittika_get_option( 'defer_scripts', true ) ) {
+		wp_script_add_data( 'mrittika-theme', 'strategy', 'defer' );
+		wp_script_add_data( 'mrittika-navigation', 'strategy', 'defer' );
+	}
 
 	// Threaded comments.
 	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
@@ -50,9 +63,13 @@ function mrittika_block_editor_assets() {
 add_action( 'enqueue_block_editor_assets', 'mrittika_block_editor_assets' );
 
 /**
- * Preconnect / resource hints kept minimal — system fonts only, no external CDNs.
+ * Preconnect to Google Fonts hosts when webfonts are enabled (faster first paint).
  */
 function mrittika_resource_hints( $hints, $relation ) {
+	if ( 'preconnect' === $relation && mrittika_get_option( 'enable_webfonts', true ) ) {
+		$hints[] = array( 'href' => 'https://fonts.googleapis.com' );
+		$hints[] = array( 'href' => 'https://fonts.gstatic.com', 'crossorigin' => 'anonymous' );
+	}
 	return $hints;
 }
 add_filter( 'wp_resource_hints', 'mrittika_resource_hints', 10, 2 );
@@ -61,9 +78,10 @@ add_filter( 'wp_resource_hints', 'mrittika_resource_hints', 10, 2 );
  * Add a no-flash inline script in <head> to set color scheme before paint.
  */
 function mrittika_color_scheme_boot() {
+	$default = mrittika_get_option( 'default_scheme', 'auto' );
 	?>
 	<script>
-	(function(){try{var k="mrittika-color-scheme",v=localStorage.getItem(k);if(v==="dark"||v==="light"){document.documentElement.setAttribute("data-theme",v);}}catch(e){}})();
+	(function(){try{var k="mrittika-color-scheme",d="<?php echo esc_js( $default ); ?>",v=localStorage.getItem(k);if(v==="dark"||v==="light"){document.documentElement.setAttribute("data-theme",v);}else if(d==="dark"||d==="light"){document.documentElement.setAttribute("data-theme",d);}}catch(e){}})();
 	</script>
 	<?php
 }

@@ -11,7 +11,4 @@
 	wp.customize('blogdescription', function (value) {
 		value.bind(function (to) { $('.site-description, .footer-tagline').text(to); });
 	});
-	wp.customize('mrittika_footer_text', function (value) {
-		value.bind(function (to) { $('.site-info').html(to); });
-	});
 })(jQuery);

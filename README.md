@@ -14,17 +14,29 @@ gray — in the spirit of editorial blogs from Google, Apple, and Bloomberg.
 ## Highlights
 
 - **Monochrome by design** — a full neutral tonal ramp; zero accent color.
-- **Material Expressive 3 tokens** — fluid type, generous shape radii, elevation and
-  motion easing curves, all in CSS custom properties.
+- **Material Expressive 3 tokens** — fluid type, generous shape radii, shadow presets,
+  spring/emphasized motion curves, plus block style variations (M3 Card, Outline, Tonal
+  buttons, Pull Quote, Checklist…), all in CSS custom properties.
+- **Poppins + Inter** webfonts (display + body) with system-stack fallback, one-click
+  disable for max speed / privacy.
 - **Light / dark mode** — follows the device, with a persisted manual toggle and no
   flash of the wrong theme on load.
-- **SEO-first** — meta description, canonical, Open Graph, Twitter cards, and JSON-LD
-  (WebSite, Organization, Article, BreadcrumbList). **Yoast-friendly**: the built-in SEO
-  output auto-disables when Yoast / Rank Math / SEOPress / AIOSEO is active.
+- **Dedicated settings dashboard** — a tabbed admin page (General · Design · Ads · SEO ·
+  Performance · Security) backed by the Settings API; no code needed to configure.
+- **Google AdSense ready** — validated Publisher ID, optional Auto Ads, four policy-safe
+  ad slots (after-header, in-content, after-post, sidebar), labeled containers, virtual
+  `/ads.txt`. Ads never render inside navigation.
+- **Security hardening** — security headers (incl. HSTS), XML-RPC disable, user-enumeration
+  blocking, generic login errors, `DISALLOW_FILE_EDIT`, hardened comment links. All toggleable.
+- **SEO-first** — meta description, canonical, Open Graph, Twitter cards, verification
+  meta, and JSON-LD (WebSite, Organization, Article, BreadcrumbList). **Yoast-friendly**:
+  built-in SEO auto-disables when Yoast / Rank Math / SEOPress / AIOSEO is active.
+- **Reading experience** — auto table of contents with scrollspy, reading-progress bar,
+  reading time, related posts, copy-link, back-to-top, View Transitions.
 - **Mobile-first & accessible** — semantic landmarks, skip link, keyboard-friendly nav,
   `prefers-reduced-motion` support, AA-contrast monochrome palette.
-- **Hybrid architecture** — classic PHP templates plus `theme.json` for the block editor.
-- **Fast** — system fonts only, no external CDN, deferred vanilla JS, no jQuery on the front end.
+- **Hybrid architecture** — classic PHP templates plus `theme.json` v3 for the block editor.
+- **Fast** — preconnected webfonts, no heavy CDN, deferred vanilla JS, no jQuery on the front end.
 - **Built for data** — styled tables for price-per-bigha / circle-rate indices.
 
 ## Requirements
@@ -38,13 +50,13 @@ gray — in the spirit of editorial blogs from Google, Apple, and Bloomberg.
 ## Installation
 
 ### From a release
-1. Download `mrittika.zip` from the [Releases](https://github.com/bengalpropertyindex/mrittika/releases) page.
+1. Download `mrittika.zip` from the [Releases](https://github.com/konkomaji/mrittika/releases) page.
 2. WordPress admin → **Appearance → Themes → Add New → Upload Theme**.
 3. Activate.
 
 ### From source
 ```bash
-git clone https://github.com/bengalpropertyindex/mrittika.git
+git clone https://github.com/konkomaji/mrittika.git
 # copy the inner mrittika/ folder into wp-content/themes/
 ```
 
@@ -52,8 +64,8 @@ git clone https://github.com/bengalpropertyindex/mrittika.git
 
 1. **Appearance → Menus** — assign menus to *Primary*, *Topics / Categories Bar*,
    *Footer*, and *Social Links*.
-2. **Appearance → Customize → Mrittika Options** — set default color scheme, footer
-   text, and a default social share image.
+2. **Mrittika** (admin menu) — the dedicated settings dashboard. Configure design,
+   AdSense, SEO, performance, and security across the six tabs.
 3. **Settings → Reading** — set a static front page or use the latest-posts blog home.
 4. **Widgets** — populate the main sidebar and up to four footer columns.
 
@@ -64,9 +76,12 @@ mrittika/
 ├── style.css              Theme header + safety baseline
 ├── theme.json             Block editor settings & styles (v3)
 ├── functions.php          Loads inc/ modules
-├── inc/                   setup, enqueue, template tags, SEO, schema, breadcrumbs, customizer, widgets
+├── inc/                   options, setup, enqueue, template tags, SEO, schema, breadcrumbs,
+│                          blocks, security, ads, customizer, widgets
+│   └── admin/settings.php dedicated tabbed settings dashboard
 ├── template-parts/        content cards, single, search, author bio, related posts
 ├── assets/css/            material-tokens.css, main.css, editor.css
+├── assets/admin/          admin.css, admin.js (settings page)
 ├── assets/js/             theme.js, navigation.js, customizer.js
 ├── *.php                  header, footer, index, home, single, page, archive, search, 404, comments
 ├── CHANGELOG.md

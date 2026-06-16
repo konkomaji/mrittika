@@ -7,6 +7,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.0] — 2026-06-16
+
+### Added
+- **Dedicated theme settings dashboard** (`Mrittika` admin menu) with tabbed UI —
+  General · Design · Ads · SEO · Performance · Security. Backed by the Settings API,
+  every field sanitized through a single central store (`inc/options.php`).
+- **Webfonts**: Poppins (display) + Inter (body) with `display=swap` and preconnect;
+  one-click disable to fall back to the system stack.
+- **Google AdSense integration** (`inc/ads.php`): validated Publisher ID, optional Auto
+  Ads, four policy-safe ad slots (after-header, in-content after Nth paragraph,
+  after-post, sidebar), labeled non-intrusive containers, and a virtual `/ads.txt`.
+- **Security hardening** (`inc/security.php`): security headers (X-Content-Type-Options,
+  Referrer-Policy, X-Frame-Options, COOP, Permissions-Policy, HSTS over HTTPS),
+  XML-RPC disable, user-enumeration blocking (`?author=N` + REST users), generic login
+  errors, `DISALLOW_FILE_EDIT`, hardened comment links, defensive comment filtering.
+  All toggleable.
+- **Material 3 Expressive** expansion: shadow presets in `theme.json`, spring/emphasized
+  motion tokens, and block style variations (M3 Card, Outline, Tonal/Text buttons,
+  Pull Quote, Dotted separator, Checklist, Expressive Rounded image).
+- **Table of contents**: auto-generated from h2/h3 on long posts, collapsible, with
+  scrollspy highlighting and auto heading anchors.
+- **Back-to-top FAB**, **copy-link** button, and **View Transitions** for navigation.
+- Performance toggles: defer scripts, remove emoji bloat, lazy-load iframes.
+- SEO additions: Twitter `site` handle, Search Console / Bing verification meta.
+- Card-style options (soft / outline / flat) and default-scheme preference.
+- Footer credit tag linking to the concept author.
+
+### Changed
+- Display font moved from Georgia to Poppins; body to Inter (system fallback retained).
+- Theme options consolidated from the Customizer into the dedicated settings page;
+  the Customizer now only handles live-preview of title/description.
+- `theme.json` bumped with shadow presets, dimensions, and sticky-position support.
+- Tested up to WordPress 6.8.
+
 ## [1.0.0] — 2026-06-16
 
 ### Added
@@ -30,5 +64,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Data-table styling tuned for property price guides and indices.
 - GPL-2.0-or-later, translation-ready (`mrittika` text domain).
 
-[Unreleased]: https://github.com/bengalpropertyindex/mrittika/compare/v1.0.0...HEAD
-[1.0.0]: https://github.com/bengalpropertyindex/mrittika/releases/tag/v1.0.0
+[Unreleased]: https://github.com/konkomaji/mrittika/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/konkomaji/mrittika/compare/v1.0.0...v1.1.0
+[1.0.0]: https://github.com/konkomaji/mrittika/releases/tag/v1.0.0

@@ -21,7 +21,9 @@ get_header();
 		}
 
 		// Related posts.
-		get_template_part( 'template-parts/related-posts' );
+		if ( mrittika_get_option( 'show_related', true ) ) {
+			get_template_part( 'template-parts/related-posts' );
+		}
 
 		// Post navigation.
 		the_post_navigation(
