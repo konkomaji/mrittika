@@ -1,0 +1,17 @@
+# Dependencies
+node_modules/
+vendor/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.log
+.idea/
+.vscode/
+*.swp
+
+# Build artifacts (we ship plain CSS/JS — no build output to ignore yet)
+*.map
+
+# WordPress local junk
+wp-cli.local.yml

@@ -1,0 +1,27 @@
+/*!
+Theme Name: Mrittika
+Theme URI: https://github.com/bengalpropertyindex/mrittika
+Author: Bengal Property Index
+Author URI: https://bengalpropertyindex.in
+Description: Mrittika (মৃত্তিকা, "earth/soil") is a monochrome, Material Expressive 3 editorial theme built for data-driven real-estate publishing. Mobile-first, SEO-optimised, Yoast-friendly, and fully block-editor aware. Designed for West Bengal property journalism: price guides, district reports, circle rates, and buyer guides.
+Version: 1.0.0
+Requires at least: 6.4
+Tested up to: 6.7
+Requires PHP: 7.4
+License: GNU General Public License v2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: mrittika
+Tags: blog, news, two-columns, right-sidebar, custom-menu, custom-logo, featured-images, threaded-comments, translation-ready, block-styles, wide-blocks, editor-style, full-width-template, accessibility-ready, dark-mode, footer-widgets
+*/
+
+/*
+ * Mrittika ships its compiled styles from /assets/css/.
+ * This file only carries the WordPress theme header (required) plus a
+ * minimal safety baseline in case the enqueued stylesheet fails to load.
+ * Edit design tokens in /assets/css/material-tokens.css and styles in
+ * /assets/css/main.css.
+ */
+
+:root { color-scheme: light dark; }
+body { margin: 0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+img { max-width: 100%; height: auto; }

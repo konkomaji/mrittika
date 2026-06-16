@@ -1,0 +1,147 @@
+/*
+ * Mrittika — Design Tokens
+ * Material Expressive 3, monochrome (black · white · grays).
+ * Single source of truth for color, type, shape, motion, elevation.
+ * Light is default; dark applies via [data-theme="dark"] or prefers-color-scheme.
+ */
+
+:root {
+	/* ---- Grayscale ramp (Material tonal palette, neutral only) ---- */
+	--m3-gray-0:   #000000;
+	--m3-gray-10:  #0a0a0a;
+	--m3-gray-20:  #141414;
+	--m3-gray-30:  #1f1f1f;
+	--m3-gray-40:  #2e2e2e;
+	--m3-gray-50:  #525252;
+	--m3-gray-60:  #737373;
+	--m3-gray-70:  #a3a3a3;
+	--m3-gray-80:  #d4d4d4;
+	--m3-gray-90:  #e7e7e7;
+	--m3-gray-95:  #f5f5f5;
+	--m3-gray-99:  #fafafa;
+	--m3-gray-100: #ffffff;
+
+	/* ---- Semantic roles (light scheme) ---- */
+	--color-surface:            var(--m3-gray-100);
+	--color-surface-dim:        var(--m3-gray-95);
+	--color-surface-container:  var(--m3-gray-95);
+	--color-surface-container-high: var(--m3-gray-90);
+	--color-surface-inverse:    var(--m3-gray-10);
+	--color-on-surface:         var(--m3-gray-10);
+	--color-on-surface-variant: var(--m3-gray-50);
+	--color-on-surface-faint:   var(--m3-gray-60);
+	--color-on-inverse:         var(--m3-gray-95);
+	--color-outline:            var(--m3-gray-80);
+	--color-outline-strong:     var(--m3-gray-60);
+	--color-primary:            var(--m3-gray-10);
+	--color-on-primary:         var(--m3-gray-100);
+	--color-accent:             var(--m3-gray-10);
+
+	/* ---- Type families ---- */
+	--font-display: "Georgia", "Times New Roman", "Noto Serif Bengali", serif;
+	--font-body: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans Bengali", Helvetica, Arial, sans-serif;
+	--font-mono: "SF Mono", "Cascadia Code", "Roboto Mono", ui-monospace, Menlo, Consolas, monospace;
+
+	/* ---- Type scale (fluid) ---- */
+	--text-xs:   0.8125rem;
+	--text-sm:   0.9375rem;
+	--text-base: 1.0625rem;
+	--text-lg:   clamp(1.125rem, 1rem + 0.6vw, 1.375rem);
+	--text-xl:   clamp(1.5rem, 1.2rem + 1.4vw, 2rem);
+	--text-2xl:  clamp(2rem, 1.5rem + 2.4vw, 3.25rem);
+	--text-3xl:  clamp(2.5rem, 1.8rem + 3.6vw, 4.5rem);
+
+	--leading-tight: 1.15;
+	--leading-snug:  1.35;
+	--leading-normal: 1.7;
+	--tracking-tight: -0.02em;
+	--tracking-wide: 0.04em;
+
+	/* ---- Shape (M3 Expressive: generous, varied radii) ---- */
+	--shape-xs:  4px;
+	--shape-sm:  8px;
+	--shape-md:  12px;
+	--shape-lg:  20px;
+	--shape-xl:  28px;
+	--shape-2xl: 40px;
+	--shape-pill: 999px;
+
+	/* ---- Spacing scale ---- */
+	--space-1: 0.25rem;
+	--space-2: 0.5rem;
+	--space-3: 1rem;
+	--space-4: 1.5rem;
+	--space-5: 2.5rem;
+	--space-6: 4rem;
+	--space-7: 6rem;
+
+	/* ---- Layout ---- */
+	--content-width: 720px;
+	--wide-width: 1140px;
+	--gutter: clamp(1rem, 4vw, 2.5rem);
+
+	/* ---- Elevation (monochrome shadows) ---- */
+	--elev-0: none;
+	--elev-1: 0 1px 2px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.10);
+	--elev-2: 0 2px 6px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.08);
+	--elev-3: 0 8px 24px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.08);
+
+	/* ---- Motion (M3 Expressive easing) ---- */
+	--ease-standard: cubic-bezier(0.2, 0, 0, 1);
+	--ease-emphasized: cubic-bezier(0.3, 0, 0, 1);
+	--ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+	--dur-fast: 140ms;
+	--dur-med: 240ms;
+	--dur-slow: 420ms;
+
+	/* ---- Borders ---- */
+	--border-hair: 1px solid var(--color-outline);
+	--border-strong: 2px solid var(--color-on-surface);
+}
+
+/* ---- Dark scheme: invert neutral roles ---- */
+@media (prefers-color-scheme: dark) {
+	:root:not([data-theme="light"]) {
+		--color-surface:            var(--m3-gray-10);
+		--color-surface-dim:        var(--m3-gray-0);
+		--color-surface-container:  var(--m3-gray-20);
+		--color-surface-container-high: var(--m3-gray-30);
+		--color-surface-inverse:    var(--m3-gray-95);
+		--color-on-surface:         var(--m3-gray-95);
+		--color-on-surface-variant: var(--m3-gray-70);
+		--color-on-surface-faint:   var(--m3-gray-60);
+		--color-on-inverse:         var(--m3-gray-10);
+		--color-outline:            var(--m3-gray-40);
+		--color-outline-strong:     var(--m3-gray-60);
+		--color-primary:            var(--m3-gray-95);
+		--color-on-primary:         var(--m3-gray-10);
+		--color-accent:             var(--m3-gray-95);
+	}
+}
+
+/* ---- Explicit dark toggle ---- */
+[data-theme="dark"] {
+	--color-surface:            var(--m3-gray-10);
+	--color-surface-dim:        var(--m3-gray-0);
+	--color-surface-container:  var(--m3-gray-20);
+	--color-surface-container-high: var(--m3-gray-30);
+	--color-surface-inverse:    var(--m3-gray-95);
+	--color-on-surface:         var(--m3-gray-95);
+	--color-on-surface-variant: var(--m3-gray-70);
+	--color-on-surface-faint:   var(--m3-gray-60);
+	--color-on-inverse:         var(--m3-gray-10);
+	--color-outline:            var(--m3-gray-40);
+	--color-outline-strong:     var(--m3-gray-60);
+	--color-primary:            var(--m3-gray-95);
+	--color-on-primary:         var(--m3-gray-10);
+	--color-accent:             var(--m3-gray-95);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	*, *::before, *::after {
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.01ms !important;
+		scroll-behavior: auto !important;
+	}
+}
