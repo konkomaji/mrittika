@@ -131,9 +131,9 @@ figcaption, .thumb-caption { font-size: var(--text-sm); color: var(--color-on-su
 .topics-list a { text-decoration: none; font-size: var(--text-sm); color: var(--color-on-surface-variant); padding-bottom: 2px; border-bottom: 2px solid transparent; }
 .topics-list a:hover, .topics-list .current-menu-item > a { color: var(--color-on-surface); border-bottom-color: var(--color-on-surface); }
 
-/* Breadcrumbs — expressive sticky chips */
+/* Breadcrumbs — M3 Expressive sticky chips */
 .breadcrumbs-wrap {
-	padding-block: 0.55rem;
+	padding-block: 0.5rem;
 	border-bottom: var(--border-hair);
 	background: color-mix(in srgb, var(--color-surface) 92%, transparent);
 	backdrop-filter: blur(10px);
@@ -143,6 +143,11 @@ figcaption, .thumb-caption { font-size: var(--text-sm); color: var(--color-on-su
 	list-style: none; display: flex; flex-wrap: wrap; align-items: center;
 	gap: 0.15em; margin: 0; padding: 0;
 	font-size: var(--text-xs);
+	animation: bc-appear 220ms var(--ease-emphasized-decel) both;
+}
+@keyframes bc-appear {
+	from { opacity: 0; transform: translateY(-4px); }
+	to   { opacity: 1; transform: none; }
 }
 .breadcrumb-item { display: inline-flex; align-items: center; }
 .breadcrumb-item:not(:last-child)::after {
@@ -325,13 +330,9 @@ input:focus, textarea:focus, select:focus { border-color: var(--color-on-surface
 
 /* ============ West Bengal 404 ============ */
 
-/* Local WB accent tokens */
-.error-404-page {
-	--wb-terracotta: #C4622D;
-	--wb-mustard: #C49A22;
-	padding: 0;
-	overflow: hidden;
-}
+/* WB accent tokens live only in the SVG art (via fallback values).
+   Page UI uses the standard theme monochrome palette. */
+.error-404-page { padding: 0; overflow: hidden; }
 
 /* Hero art canvas */
 .e404-hero { position: relative; width: 100%; background: var(--color-surface-container); overflow: hidden; }
@@ -343,10 +344,10 @@ input:focus, textarea:focus, select:focus { border-color: var(--color-on-surface
 .wb-wave--2 { fill: var(--wb-terracotta,#C4622D); opacity: 0.10; }
 .wb-wave--3 { fill: var(--wb-mustard,#C49A22); opacity: 0.07; }
 
-/* Animated floating kantha dots */
+/* Animated floating dots */
 .e404-float {
 	position: absolute; border-radius: var(--shape-pill);
-	background: var(--wb-terracotta,#C4622D); opacity: 0.18;
+	background: var(--color-on-surface); opacity: 0.10;
 	animation: e404-drift linear infinite alternate;
 }
 .e404-float--1 { width: 11px; height: 11px; top: 18%; left: 12%; animation-duration: 3.4s; }
@@ -360,12 +361,12 @@ input:focus, textarea:focus, select:focus { border-color: var(--color-on-surface
 /* Body content */
 .e404-body { text-align: center; padding-block: var(--space-5) var(--space-7); }
 
-/* Ghost numeral */
+/* Ghost numeral — monochrome, very faint */
 .e404-numeral {
 	font-family: var(--font-display); font-weight: 700; line-height: 1;
 	letter-spacing: -0.04em; pointer-events: none; user-select: none;
 	font-size: clamp(5.5rem, 20vw, 10rem);
-	color: var(--wb-terracotta,#C4622D); opacity: 0.13;
+	color: var(--color-on-surface); opacity: 0.08;
 	margin-bottom: -0.18em;
 }
 
@@ -373,7 +374,7 @@ input:focus, textarea:focus, select:focus { border-color: var(--color-on-surface
 .e404-bengali {
 	font-family: "Noto Sans Bengali", var(--font-display);
 	font-size: var(--text-lg); font-weight: 600;
-	color: var(--wb-terracotta,#C4622D);
+	color: var(--color-on-surface-variant);
 	letter-spacing: 0.02em; margin: 0 0 0.2em;
 }
 .e404-title { font-size: var(--text-2xl); margin: 0 0 0.5em; }
@@ -519,7 +520,49 @@ input:focus, textarea:focus, select:focus { border-color: var(--color-on-surface
 .copy-link { background: transparent; cursor: pointer; }
 .copy-link.copied { background: var(--color-on-surface); color: var(--color-surface); }
 
-/* ============ 17. EXPLORE TOPICS ============ */
+/* ============ 17. PAGE TEMPLATE ============ */
+
+/* Page with hero image */
+.page-hero {
+	position: relative; width: 100%; overflow: hidden;
+	background: var(--color-surface-container);
+	margin-bottom: var(--space-5);
+}
+.page-hero-img {
+	width: 100%; height: clamp(260px, 40vw, 480px);
+	object-fit: cover; display: block;
+	animation: page-hero-reveal 600ms var(--ease-emphasized-decel) both;
+}
+@keyframes page-hero-reveal {
+	from { opacity: 0; transform: scale(1.04); }
+	to   { opacity: 1; transform: none; }
+}
+.page-hero-overlay {
+	position: absolute; inset: 0;
+	background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 50%);
+	display: flex; align-items: flex-end;
+}
+.page-hero-title {
+	color: #fff; padding: var(--space-4) var(--gutter);
+	font-size: var(--text-2xl); margin: 0;
+	max-width: var(--wide-width); width: 100%; margin-inline: auto;
+}
+
+/* Page without hero */
+.entry-page-header {
+	max-width: var(--content-width); margin-inline: auto;
+	padding-top: var(--space-5); margin-bottom: var(--space-4);
+}
+.entry-page-header .entry-title {
+	font-size: var(--text-2xl);
+}
+.entry-page-standfirst {
+	font-size: var(--text-lg); color: var(--color-on-surface-variant);
+	font-family: var(--font-display); margin-top: 0.5em;
+}
+.entry-page { max-width: var(--content-width); margin-inline: auto; }
+
+/* ============ 18. EXPLORE TOPICS ============ */
 
 .topics-explore {
 	padding-block: var(--space-6);

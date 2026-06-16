@@ -54,6 +54,18 @@ if ( ! function_exists( 'mrittika_breadcrumbs' ) ) {
 	}
 }
 
+if ( ! function_exists( 'mrittika_breadcrumb_label' ) ) {
+	/**
+	 * Truncate a breadcrumb label to keep the trail compact.
+	 */
+	function mrittika_breadcrumb_label( $label, $max = 28 ) {
+		if ( mb_strlen( $label ) > $max ) {
+			return mb_substr( $label, 0, $max - 1 ) . '…';
+		}
+		return $label;
+	}
+}
+
 if ( ! function_exists( 'mrittika_get_breadcrumb_items' ) ) {
 	/**
 	 * Build the trail as an ordered array of [label, url].
@@ -71,34 +83,34 @@ if ( ! function_exists( 'mrittika_get_breadcrumb_items' ) ) {
 				foreach ( $ancestors as $anc_id ) {
 					$anc = get_term( $anc_id, 'category' );
 					if ( $anc && ! is_wp_error( $anc ) ) {
-						$items[] = array( 'label' => $anc->name, 'url' => get_category_link( $anc->term_id ) );
+						$items[] = array( 'label' => mrittika_breadcrumb_label( $anc->name ), 'url' => get_category_link( $anc->term_id ) );
 					}
 				}
-				$items[] = array( 'label' => $cat->name, 'url' => get_category_link( $cat->term_id ) );
+				$items[] = array( 'label' => mrittika_breadcrumb_label( $cat->name ), 'url' => get_category_link( $cat->term_id ) );
 			}
 			if ( is_single() ) {
-				$items[] = array( 'label' => get_the_title(), 'url' => '' );
+				$items[] = array( 'label' => mrittika_breadcrumb_label( get_the_title() ), 'url' => '' );
 			}
 		} elseif ( is_page() ) {
-			$ancestors = array_reverse( get_post_ancestors( get_the_ID() ) );
+			$ancestors = array_reverse( array_slice( get_post_ancestors( get_the_ID() ), 0, 2 ) ); // max 2 ancestor levels
 			foreach ( $ancestors as $anc_id ) {
-				$items[] = array( 'label' => get_the_title( $anc_id ), 'url' => get_permalink( $anc_id ) );
+				$items[] = array( 'label' => mrittika_breadcrumb_label( get_the_title( $anc_id ) ), 'url' => get_permalink( $anc_id ) );
 			}
-			$items[] = array( 'label' => get_the_title(), 'url' => '' );
+			$items[] = array( 'label' => mrittika_breadcrumb_label( get_the_title() ), 'url' => '' );
 		} elseif ( is_tag() ) {
-			$items[] = array( 'label' => single_tag_title( '', false ), 'url' => '' );
+			$items[] = array( 'label' => mrittika_breadcrumb_label( single_tag_title( '', false ) ), 'url' => '' );
 		} elseif ( is_search() ) {
-			$items[] = array( 'label' => sprintf( __( 'Search: %s', 'mrittika' ), get_search_query() ), 'url' => '' );
+			$items[] = array( 'label' => mrittika_breadcrumb_label( sprintf( __( 'Search: %s', 'mrittika' ), get_search_query() ) ), 'url' => '' );
 		} elseif ( is_author() ) {
-			$items[] = array( 'label' => get_the_author(), 'url' => '' );
+			$items[] = array( 'label' => mrittika_breadcrumb_label( get_the_author() ), 'url' => '' );
 		} elseif ( is_year() || is_month() || is_day() ) {
-			$items[] = array( 'label' => get_the_archive_title(), 'url' => '' );
+			$items[] = array( 'label' => mrittika_breadcrumb_label( get_the_archive_title() ), 'url' => '' );
 		} elseif ( is_post_type_archive() ) {
-			$items[] = array( 'label' => post_type_archive_title( '', false ), 'url' => '' );
+			$items[] = array( 'label' => mrittika_breadcrumb_label( post_type_archive_title( '', false ) ), 'url' => '' );
 		} elseif ( is_404() ) {
-			$items[] = array( 'label' => __( 'Not Found', 'mrittika' ), 'url' => '' );
+			$items[] = array( 'label' => __( '404', 'mrittika' ), 'url' => '' );
 		} elseif ( is_home() && ! is_front_page() ) {
-			$items[] = array( 'label' => get_the_title( get_option( 'page_for_posts' ) ), 'url' => '' );
+			$items[] = array( 'label' => mrittika_breadcrumb_label( get_the_title( get_option( 'page_for_posts' ) ) ), 'url' => '' );
 		}
 
 		return $items;
