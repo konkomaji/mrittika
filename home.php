@@ -56,6 +56,7 @@ $page_url_t = esc_url( get_pagenum_link( 2 ) );
 		'order'      => 'DESC',
 		'hide_empty' => true,
 		'number'     => 24,
+		'parent'     => 0,
 	) );
 
 	$wb_palette = array(
