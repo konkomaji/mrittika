@@ -233,3 +233,17 @@ if ( ! function_exists( 'mrittika_pagination' ) ) {
 		);
 	}
 }
+
+if ( ! function_exists( 'mrittika_get_cat_image_url' ) ) {
+	/**
+	 * Returns the category tile image URL, or empty string if none set.
+	 */
+	function mrittika_get_cat_image_url( $term_id, $size = 'mrittika-cat-tile' ) {
+		$image_id = absint( get_term_meta( $term_id, 'mrittika_cat_image', true ) );
+		if ( ! $image_id ) {
+			return '';
+		}
+		$src = wp_get_attachment_image_src( $image_id, $size );
+		return $src ? $src[0] : '';
+	}
+}

@@ -7,6 +7,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.0] — 2026-06-17
+
+### Added
+- **"Explore our Topics"** section on homepage — responsive grid of category cubes
+  (1:1 square, rounded `shape-2xl`). Each cube shows category image or a cycling
+  WB-inspired gradient (terracotta/indigo/mustard/sage) with large decorative initial
+  and post count. Hover: `translateY(-5px) scale(1.03)` spring lift. Click triggers
+  View Transitions API (`::view-transition-old/new`) with slide-fade animation; graceful
+  fallback to normal navigation.
+- **Category image admin field** — Upload 800×800 image per category from the WP
+  category edit screen. Stored in term meta `mrittika_cat_image`. New image size
+  `mrittika-cat-tile` (800×800, hard crop). Helper: `mrittika_get_cat_image_url()`.
+- **Infinite scroll** on homepage — IntersectionObserver watches a sentinel element;
+  fetches next page via `fetch()`, parses HTML, appends cards with staggered
+  `card-appear` animation (60ms delay per card). Shows spinner while loading.
+  "You've read everything ✦" end message when all pages consumed. Works with both
+  plain and pretty WordPress permalink structures.
+- **"Our Archives" button** — Expressive pill button before footer, links to current
+  year archive. Hover: fills solid with `translateY(-3px) + shadow-lg`; arrow icon
+  slides right on hover.
+- **Search restricted to posts only** — `pre_get_posts` hook excludes pages, CPTs,
+  and attachments from front-end search results.
+- Section renamed **"Start to Read"** (was "More stories").
+
+### Fixed
+- **Card image not filling container** — `<a class="post-thumbnail">` was `display:inline`
+  (default anchor), preventing `width:100%` on the image from working. Added
+  `.card-media a, .card-media .post-thumbnail { display:block; line-height:0; }`.
+
 ## [1.2.0] — 2026-06-16
 
 ### Added
@@ -107,7 +136,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Data-table styling tuned for property price guides and indices.
 - GPL-2.0-or-later, translation-ready (`mrittika` text domain).
 
-[Unreleased]: https://github.com/konkomaji/mrittika/compare/v1.2.0...HEAD
+[Unreleased]: https://github.com/konkomaji/mrittika/compare/v1.3.0...HEAD
+[1.3.0]: https://github.com/konkomaji/mrittika/compare/v1.2.0...v1.3.0
 [1.2.0]: https://github.com/konkomaji/mrittika/compare/v1.1.1...v1.2.0
 [1.1.1]: https://github.com/konkomaji/mrittika/compare/v1.1.0...v1.1.1
 [1.1.0]: https://github.com/konkomaji/mrittika/compare/v1.0.0...v1.1.0

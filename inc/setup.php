@@ -47,6 +47,7 @@ if ( ! function_exists( 'mrittika_setup' ) ) {
 		add_image_size( 'mrittika-card', 720, 480, true );    // 3:2 cards.
 		add_image_size( 'mrittika-thumb', 160, 160, true );   // square list thumb.
 		add_image_size( 'mrittika-wide', 1600, 1067, true );  // 3:2 full-bleed.
+		add_image_size( 'mrittika-cat-tile', 800, 800, true ); // 1:1 category cube.
 
 		register_nav_menus(
 			array(

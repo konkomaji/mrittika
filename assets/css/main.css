@@ -171,6 +171,8 @@ figcaption, .thumb-caption { font-size: var(--text-sm); color: var(--color-on-su
 .post-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: var(--space-5); }
 .post-card { display: flex; flex-direction: column; }
 .card-media { overflow: hidden; border-radius: var(--shape-lg); margin-bottom: var(--space-3); background: var(--color-surface-container); }
+/* Fix: <a class="post-thumbnail"> inside card-media is inline by default — must be block for image to fill */
+.card-media a, .card-media .post-thumbnail { display: block; line-height: 0; }
 .card-media img { width: 100%; aspect-ratio: 3 / 2; object-fit: cover; transition: transform var(--dur-slow) var(--ease-emphasized); }
 .post-card:hover .card-media img { transform: scale(1.04); }
 .card-title { font-size: var(--text-lg); margin: 0.2em 0 0.4em; }
@@ -516,6 +518,156 @@ input:focus, textarea:focus, select:focus { border-color: var(--color-on-surface
 /* Copy-link feedback */
 .copy-link { background: transparent; cursor: pointer; }
 .copy-link.copied { background: var(--color-on-surface); color: var(--color-surface); }
+
+/* ============ 17. EXPLORE TOPICS ============ */
+
+.topics-explore {
+	padding-block: var(--space-6);
+	background: var(--color-surface-container);
+	margin-block: var(--space-5);
+}
+.topics-explore-header {
+	text-align: center; margin-bottom: var(--space-5);
+}
+.topics-explore-title {
+	font-size: var(--text-2xl); margin: 0 0 0.3em;
+}
+.topics-explore-lead {
+	color: var(--color-on-surface-variant); margin: 0; font-size: var(--text-base);
+}
+
+/* Category cube grid */
+.cat-cubes-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+	gap: var(--space-3);
+}
+@media (min-width: 900px) {
+	.cat-cubes-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); }
+}
+.cat-cube {
+	position: relative;
+	display: block;
+	aspect-ratio: 1;
+	border-radius: var(--shape-2xl);
+	overflow: hidden;
+	text-decoration: none;
+	cursor: pointer;
+	transition: transform var(--dur-med) var(--ease-spring),
+	            box-shadow var(--dur-med) var(--ease-emphasized);
+}
+.cat-cube:hover {
+	transform: translateY(-5px) scale(1.03);
+	box-shadow: var(--shadow-xl);
+}
+.cat-cube:active { transform: scale(0.96); }
+.cat-cube-img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.cat-cube-bg {
+	position: absolute; inset: 0;
+	display: flex; align-items: center; justify-content: center;
+}
+.cat-cube-initial {
+	font-family: var(--font-display); font-weight: 700;
+	font-size: clamp(2.5rem, 8vw, 4.5rem);
+	color: rgba(255,255,255,0.2);
+	line-height: 1; user-select: none;
+}
+.cat-cube-overlay {
+	position: absolute; inset: 0;
+	background: linear-gradient(to top, rgba(0,0,0,0.78) 0%, rgba(0,0,0,0.08) 55%, transparent 100%);
+	display: flex; flex-direction: column;
+	justify-content: flex-end;
+	padding: var(--space-3);
+}
+.cat-cube-name {
+	font-family: var(--font-display); font-size: var(--text-base); font-weight: 700;
+	color: #fff; margin: 0 0 0.12em; line-height: var(--leading-snug);
+}
+.cat-cube-count {
+	font-size: var(--text-xs); color: rgba(255,255,255,0.65); margin: 0;
+}
+
+/* View transition for category navigation */
+::view-transition-old(root) {
+	animation: vt-out 280ms var(--ease-emphasized-accel) forwards;
+}
+::view-transition-new(root) {
+	animation: vt-in 380ms var(--ease-emphasized-decel) forwards;
+}
+@keyframes vt-out {
+	from { opacity: 1; transform: none; }
+	to   { opacity: 0; transform: translateY(-12px) scale(0.97); }
+}
+@keyframes vt-in {
+	from { opacity: 0; transform: translateY(16px) scale(0.98); }
+	to   { opacity: 1; transform: none; }
+}
+
+/* ============ 18. INFINITE SCROLL ============ */
+
+.home-start-heading { margin-top: var(--space-5); }
+.infinite-sentinel { height: 2px; margin-top: var(--space-4); }
+.infinite-loader {
+	display: none; justify-content: center; align-items: center;
+	padding: var(--space-4);
+}
+.infinite-loader.is-loading { display: flex; }
+.infinite-spinner {
+	width: 32px; height: 32px;
+	border: 2.5px solid var(--color-outline);
+	border-top-color: var(--color-on-surface);
+	border-radius: 50%;
+	animation: spin 0.65s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.infinite-end {
+	display: none; text-align: center; padding: var(--space-4);
+	color: var(--color-on-surface-faint); font-size: var(--text-sm);
+	gap: 0.75em; align-items: center; justify-content: center; flex-wrap: wrap;
+}
+.infinite-end.is-visible { display: flex; }
+.infinite-end a { color: var(--color-on-surface-variant); }
+
+/* Post cards animate in when appended */
+.post-card--appearing {
+	animation: card-appear 360ms var(--ease-emphasized-decel) both;
+}
+@keyframes card-appear {
+	from { opacity: 0; transform: translateY(20px); }
+	to   { opacity: 1; transform: none; }
+}
+
+/* ============ 19. OUR ARCHIVES ============ */
+
+.home-archives-row {
+	background: var(--color-surface-container);
+	border-top: var(--border-hair);
+	padding-block: var(--space-7);
+}
+.home-archives-inner { text-align: center; }
+.home-archives-label {
+	font-size: var(--text-sm); color: var(--color-on-surface-faint);
+	text-transform: uppercase; letter-spacing: var(--tracking-wide);
+	margin: 0 0 var(--space-3);
+}
+.archives-btn {
+	display: inline-flex; align-items: center; gap: 0.55em;
+	font-family: var(--font-display); font-size: var(--text-lg); font-weight: 700;
+	padding: 0.85em 2.2em; border: var(--border-strong);
+	border-radius: var(--shape-pill); text-decoration: none;
+	color: var(--color-on-surface); background: transparent;
+	transition: background var(--dur-med) var(--ease-spring),
+	            color var(--dur-fast) var(--ease-standard),
+	            transform var(--dur-fast) var(--ease-spring),
+	            box-shadow var(--dur-med) var(--ease-emphasized);
+}
+.archives-btn:hover {
+	background: var(--color-on-surface); color: var(--color-surface);
+	transform: translateY(-3px); box-shadow: var(--shadow-lg);
+}
+.archives-btn:active { transform: scale(0.97); box-shadow: none; }
+.archives-btn svg { transition: transform var(--dur-fast) var(--ease-spring); }
+.archives-btn:hover svg { transform: translateX(4px); }
 
 /* ============ 17. FAQ ACCORDION ============ */
 

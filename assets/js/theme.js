@@ -124,5 +124,99 @@
 				}
 			});
 		}
+
+		// --- Infinite scroll on homepage post grid ---
+		var grid      = document.getElementById('infinite-post-grid');
+		var sentinel  = document.getElementById('infinite-sentinel');
+		var loader    = document.getElementById('infinite-loader');
+		var endMsg    = document.getElementById('infinite-end');
+
+		if (grid && sentinel) {
+			var maxPages  = parseInt(grid.getAttribute('data-max-pages'), 10) || 1;
+			var curPage   = 1;
+			var fetching  = false;
+
+			function getNextUrl(page) {
+				var base = grid.getAttribute('data-base-url') || window.location.origin + '/';
+				// WordPress paged URL: /?paged=N or /page/N/ depending on permalink structure
+				if (base.indexOf('?') !== -1) {
+					return base + '&paged=' + page;
+				}
+				// Try /page/N/ structure first (pretty permalinks)
+				return base.replace(/\/?$/, '') + '/page/' + page + '/';
+			}
+
+			function appendCards(html) {
+				var parser = new DOMParser();
+				var doc    = parser.parseFromString(html, 'text/html');
+				var newCards = doc.querySelectorAll('#infinite-post-grid .post-card');
+				if (!newCards.length) {
+					// Fallback: try plain .post-grid or .post-card
+					newCards = doc.querySelectorAll('.post-grid .post-card, .post-card');
+				}
+				var delay = 0;
+				newCards.forEach(function(card) {
+					card.classList.add('post-card--appearing');
+					card.style.animationDelay = delay + 'ms';
+					delay += 60;
+					grid.appendChild(card);
+				});
+			}
+
+			function loadNextPage() {
+				if (fetching || curPage >= maxPages) return;
+				fetching = true;
+				loader.classList.add('is-loading');
+
+				var nextPage = curPage + 1;
+				var url = getNextUrl(nextPage);
+
+				fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+					.then(function(r) {
+						if (!r.ok) throw new Error('Network error');
+						return r.text();
+					})
+					.then(function(html) {
+						appendCards(html);
+						curPage = nextPage;
+						grid.setAttribute('data-current-page', curPage);
+						loader.classList.remove('is-loading');
+						fetching = false;
+						if (curPage >= maxPages) {
+							sentinel.style.display = 'none';
+							endMsg.classList.add('is-visible');
+						}
+					})
+					.catch(function() {
+						loader.classList.remove('is-loading');
+						fetching = false;
+					});
+			}
+
+			if (maxPages > 1 && 'IntersectionObserver' in window) {
+				var scrollObserver = new IntersectionObserver(function(entries) {
+					if (entries[0].isIntersecting) { loadNextPage(); }
+				}, { rootMargin: '0px 0px 400px 0px' });
+				scrollObserver.observe(sentinel);
+			} else if (maxPages <= 1) {
+				endMsg.classList.add('is-visible');
+				sentinel.style.display = 'none';
+			}
+		}
+
+		// --- Category cube: View Transitions navigation ---
+		document.querySelectorAll('.cat-cube[data-cat-nav]').forEach(function(cube) {
+			cube.addEventListener('click', function(e) {
+				var href = cube.getAttribute('href');
+				if (!href) return;
+				if (document.startViewTransition) {
+					e.preventDefault();
+					document.startViewTransition(function() {
+						window.location.assign(href);
+					});
+				}
+				// else: follow link normally
+			});
+		});
 	});
 })();
