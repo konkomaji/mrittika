@@ -34,8 +34,8 @@ get_header();
 			?>
 		</section>
 
-		<div class="wrap layout-with-sidebar">
-			<div class="content-area">
+		<div class="wrap">
+			<div class="content-area is-full">
 				<header class="section-heading">
 					<h2><?php esc_html_e( 'More stories', 'mrittika' ); ?></h2>
 				</header>
@@ -50,8 +50,6 @@ get_header();
 				</div>
 				<?php mrittika_pagination(); ?>
 			</div>
-
-			<?php get_sidebar(); ?>
 		</div>
 
 	<?php else : ?>

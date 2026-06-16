@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.1] — 2026-06-16
+
+### Fixed
+- **Mobile header no longer breaks.** Rebuilt the responsive header: single non-wrapping
+  row, truncating site title, tagline hidden on phones, and the hamburger moved into the
+  right-hand action cluster (Apple/Google-style). Nav is now a height-anchored slide-down
+  panel with scroll-lock; resets cleanly on resize. Header height tokenised (`--header-h`,
+  64px → 56px on phones).
+- Menu toggle markup moved out of `<nav>` into `.header-actions`; JS updated to match and
+  to close the menu on link tap, Escape, and desktop resize.
+
+### Changed
+- **Homepage no longer shows the sidebar / widgets** — the blog home is now a full-width
+  story grid. Sidebars remain on archives, search, and single posts.
+- Tablet breakpoint raised to 900px; added a dedicated 560px phone breakpoint.
+
 ## [1.1.0] — 2026-06-16
 
 ### Added
@@ -64,6 +80,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Data-table styling tuned for property price guides and indices.
 - GPL-2.0-or-later, translation-ready (`mrittika` text domain).
 
-[Unreleased]: https://github.com/konkomaji/mrittika/compare/v1.1.0...HEAD
+[Unreleased]: https://github.com/konkomaji/mrittika/compare/v1.1.1...HEAD
+[1.1.1]: https://github.com/konkomaji/mrittika/compare/v1.1.0...v1.1.1
 [1.1.0]: https://github.com/konkomaji/mrittika/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/konkomaji/mrittika/releases/tag/v1.0.0
