@@ -39,6 +39,8 @@
 		?>
 	</div>
 
+	<?php mrittika_faq_display(); ?>
+
 	<footer class="entry-footer">
 		<?php
 		$tags = get_the_tag_list( '', '', '' );

@@ -15,8 +15,8 @@ if ( ! function_exists( 'mrittika_posted_on' ) ) {
 	 */
 	function mrittika_posted_on() {
 		$time = '<time class="entry-date published" datetime="%1$s">%2$s</time>';
-		if ( get_the_time( 'U' ) !== get_the_modified_time( 'U' ) ) {
-			$time .= '<time class="entry-date updated" datetime="%3$s">%4$s</time>';
+		if ( get_the_date() !== get_the_modified_date() ) {
+			$time .= ' &bull; <time class="entry-date updated" datetime="%3$s">%4$s</time>';
 		}
 		printf(
 			'<span class="posted-on">%s</span>',

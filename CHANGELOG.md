@@ -7,6 +7,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.0] — 2026-06-16
+
+### Added
+- **Stunning Bengal 404 page** — Full-viewport abstract art hero with hand-crafted SVG:
+  alpona radial mandala, Bishnupur terracotta diamond patterns, abstract ilish fish
+  silhouette, mustard-field wave layers, and animated kantha floating dots.
+  Bengali headline "হারানো পথ" (Lost Path) with warm terracotta/mustard accent palette.
+  Two-column suggestions grid (recent posts + category pills). Fully dark-mode aware.
+- **FAQ Builder** (`inc/faq.php`) — Repeatable metabox on posts: Question + Answer +
+  optional AI-citation badge (model name, source, URL). M3 Expressive accordion on
+  frontend with spring expand/collapse animation. Drag-to-reorder in admin.
+  Emits `FAQPage` JSON-LD schema automatically (skips if SEO plugin active).
+- **Expressive breadcrumbs** — Each item is an interactive chip/pill: hover fills,
+  click scales with momentum spring (`scale(0.93)` + inverse-surface flash), separator
+  changed from `/` to `›`. Frosted-glass wrap (`backdrop-filter: blur`) baked into
+  the sticky site-header.
+
+### Changed
+- All featured image aspect ratios unified to **3:2** sitewide: hero thumbnail
+  (`1200×800`), wide (`1600×1067`), home-hero feature card, single-post thumbnail,
+  and mobile secondary card. Upload once, display correctly everywhere.
+- **Duplicate date bug fixed**: `mrittika_posted_on()` now compares formatted date
+  strings (`get_the_date()`) instead of Unix timestamps, so same-day saves no longer
+  print "June 16, 2026June 16, 2026". Updated date shows only when actually a
+  different calendar date, separated with `·`.
+- Theme version bumped to `1.2.0`.
+
 ## [1.1.1] — 2026-06-16
 
 ### Fixed
@@ -80,7 +107,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Data-table styling tuned for property price guides and indices.
 - GPL-2.0-or-later, translation-ready (`mrittika` text domain).
 
-[Unreleased]: https://github.com/konkomaji/mrittika/compare/v1.1.1...HEAD
+[Unreleased]: https://github.com/konkomaji/mrittika/compare/v1.2.0...HEAD
+[1.2.0]: https://github.com/konkomaji/mrittika/compare/v1.1.1...v1.2.0
 [1.1.1]: https://github.com/konkomaji/mrittika/compare/v1.1.0...v1.1.1
 [1.1.0]: https://github.com/konkomaji/mrittika/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/konkomaji/mrittika/releases/tag/v1.0.0

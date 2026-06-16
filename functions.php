@@ -10,7 +10,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'MRITTIKA_VERSION', '1.1.1' );
+define( 'MRITTIKA_VERSION', '1.2.0' );
 define( 'MRITTIKA_DIR', get_template_directory() );
 define( 'MRITTIKA_URI', get_template_directory_uri() );
 
@@ -32,6 +32,7 @@ $mrittika_includes = array(
 	'/inc/customizer.php',     // Customizer live-preview options.
 	'/inc/widgets.php',        // Sidebar / footer / ad widget areas.
 	'/inc/admin/settings.php', // Dedicated theme settings dashboard.
+	'/inc/faq.php',            // FAQ builder metabox + accordion + FAQPage schema.
 );
 
 foreach ( $mrittika_includes as $mrittika_file ) {

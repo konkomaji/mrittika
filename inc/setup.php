@@ -43,10 +43,10 @@ if ( ! function_exists( 'mrittika_setup' ) ) {
 		);
 
 		// Editorial image crops.
-		set_post_thumbnail_size( 1200, 675, true );          // 16:9 hero.
+		set_post_thumbnail_size( 1200, 800, true );           // 3:2 hero.
 		add_image_size( 'mrittika-card', 720, 480, true );    // 3:2 cards.
 		add_image_size( 'mrittika-thumb', 160, 160, true );   // square list thumb.
-		add_image_size( 'mrittika-wide', 1600, 900, true );   // full-bleed.
+		add_image_size( 'mrittika-wide', 1600, 1067, true );  // 3:2 full-bleed.
 
 		register_nav_menus(
 			array(
