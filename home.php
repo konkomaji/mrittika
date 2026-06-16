@@ -1,6 +1,6 @@
 <?php
 /**
- * Blog home — magazine hero + Explore Topics + infinite-scroll stories + Archives.
+ * Blog home — magazine hero + Explore Topics marquee + infinite-scroll stories + Archives.
  *
  * @package Mrittika
  */
@@ -8,35 +8,48 @@
 get_header();
 
 global $wp_query;
-$max_pages = (int) $wp_query->max_num_pages;
-$base_url  = esc_url( home_url( '/' ) );
+$max_pages  = (int) $wp_query->max_num_pages;
+$cur_page   = max( 1, (int) get_query_var( 'paged' ) );
+// Page-2 URL template: JS replaces the "2" with the desired page number.
+$page_url_t = esc_url( get_pagenum_link( 2 ) );
 ?>
 
 <main id="primary" class="site-main">
 
 <?php if ( have_posts() ) : ?>
 
-	<!-- ── 1. Magazine hero: first 3 posts ─────────────────── -->
+	<?php if ( ! is_paged() ) : ?>
+
+	<!-- ── 1. Magazine hero: latest 3 posts (own query, page 1 only) ── -->
+	<?php
+	$hero_q = new WP_Query( array(
+		'posts_per_page'      => 3,
+		'ignore_sticky_posts' => true,
+	) );
+	if ( $hero_q->have_posts() ) :
+	?>
 	<section class="home-hero wrap" aria-label="<?php esc_attr_e( 'Latest stories', 'mrittika' ); ?>">
 		<?php
-		$mrittika_count = 0;
-		while ( have_posts() && $mrittika_count < 3 ) :
-			the_post();
-			$variant = ( 0 === $mrittika_count ) ? 'feature' : 'secondary';
+		$h = 0;
+		while ( $hero_q->have_posts() ) :
+			$hero_q->the_post();
+			$variant = ( 0 === $h ) ? 'feature' : 'secondary';
 			set_query_var( 'mrittika_card_variant', $variant );
-			if ( 1 === $mrittika_count ) {
+			if ( 1 === $h ) {
 				echo '<div class="hero-secondary-stack">';
 			}
 			get_template_part( 'template-parts/content', 'card' );
-			$mrittika_count++;
+			$h++;
 		endwhile;
-		if ( $mrittika_count > 1 ) {
+		if ( $h > 1 ) {
 			echo '</div>';
 		}
+		wp_reset_postdata();
 		?>
 	</section>
+	<?php endif; ?>
 
-	<!-- ── 2. Explore our Topics ──────────────────────────── -->
+	<!-- ── 2. Explore our Topics — horizontal marquee ─────────── -->
 	<?php
 	$explore_cats = get_categories( array(
 		'orderby'    => 'count',
@@ -59,18 +72,20 @@ $base_url  = esc_url( home_url( '/' ) );
 	if ( ! empty( $explore_cats ) ) :
 	?>
 	<section class="topics-explore" aria-labelledby="topics-explore-heading">
-		<div class="topics-explore-inner wrap">
 
-			<div class="topics-explore-header">
-				<h2 class="topics-explore-title" id="topics-explore-heading">
-					<?php esc_html_e( 'Explore our Topics', 'mrittika' ); ?>
-				</h2>
-				<p class="topics-explore-lead">
-					<?php esc_html_e( 'Browse stories by subject', 'mrittika' ); ?>
-				</p>
-			</div>
+		<div class="topics-explore-header wrap">
+			<h2 class="topics-explore-title" id="topics-explore-heading">
+				<?php esc_html_e( 'Explore our Topics', 'mrittika' ); ?>
+			</h2>
+			<p class="topics-explore-lead">
+				<?php esc_html_e( 'Browse stories by subject', 'mrittika' ); ?>
+			</p>
+		</div>
 
-			<div class="cat-cubes-grid">
+		<!-- Marquee strip: items duplicated for seamless infinite loop -->
+		<div class="topics-scroll-outer">
+			<div class="cat-cubes-track" id="cat-cubes-track">
+				<?php for ( $rep = 0; $rep < 2; $rep++ ) : ?>
 				<?php foreach ( $explore_cats as $cat ) :
 					$palette_item = $wb_palette[ $cat->term_id % count( $wb_palette ) ];
 					$img_url      = mrittika_get_cat_image_url( $cat->term_id );
@@ -85,6 +100,7 @@ $base_url  = esc_url( home_url( '/' ) );
 					href="<?php echo esc_url( get_category_link( $cat->term_id ) ); ?>"
 					aria-label="<?php echo esc_attr( $cat->name . ' — ' . $count ); ?>"
 					data-cat-nav="1"
+					<?php if ( 1 === $rep ) : ?>aria-hidden="true" tabindex="-1"<?php endif; ?>
 				>
 					<?php if ( $img_url ) : ?>
 					<img
@@ -103,33 +119,37 @@ $base_url  = esc_url( home_url( '/' ) );
 						<span class="cat-cube-initial"><?php echo esc_html( $initial ); ?></span>
 					</div>
 					<?php endif; ?>
-
 					<div class="cat-cube-overlay">
 						<p class="cat-cube-name"><?php echo esc_html( $cat->name ); ?></p>
 						<p class="cat-cube-count"><?php echo esc_html( $count ); ?></p>
 					</div>
 				</a>
 				<?php endforeach; ?>
+				<?php endfor; ?>
 			</div>
-
 		</div>
+
 	</section>
 	<?php endif; ?>
 
-	<!-- ── 3. Start to Read — infinite-scroll grid ─────────── -->
+	<?php endif; // ! is_paged() ?>
+
+	<!-- ── 3. Start to Read — all published posts, infinite-scroll ── -->
 	<div class="wrap" id="start-to-read">
 		<div class="content-area is-full">
 
+			<?php if ( ! is_paged() ) : ?>
 			<header class="section-heading home-start-heading">
 				<h2><?php esc_html_e( 'Start to Read', 'mrittika' ); ?></h2>
 			</header>
+			<?php endif; ?>
 
 			<div
 				class="post-grid"
 				id="infinite-post-grid"
 				data-max-pages="<?php echo esc_attr( $max_pages ); ?>"
-				data-current-page="1"
-				data-base-url="<?php echo esc_url( $base_url ); ?>"
+				data-current-page="<?php echo esc_attr( $cur_page ); ?>"
+				data-page-url="<?php echo $page_url_t; ?>"
 			>
 				<?php
 				while ( have_posts() ) :

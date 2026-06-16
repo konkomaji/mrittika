@@ -7,6 +7,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.4.0] — 2026-06-17
+
+### Changed
+- **"Explore our Topics" → single-line horizontal marquee** — replaced the multi-row
+  auto-fill grid with a continuous CSS marquee strip (`animation: topics-marquee 40s
+  linear infinite`). Items duplicated in PHP for seamless loop. Pauses on hover and on
+  touch (mobile). Edge fades via `mask-image` gradient. Each cube is a fixed 160×160 px
+  flex item instead of a grid cell — works on all screen widths.
+- **Hero uses a dedicated `WP_Query`** — hero section (latest 3 posts) no longer
+  consumes posts from the main query. "Start to Read" now shows all posts from page 1
+  of the main query (posts 1–N), so the infinite scroll cycle covers every published
+  post without gaps or skipped entries.
+- **Infinite scroll URL builder hardened** — switched from `data-base-url` to
+  `data-page-url` (seeded with `get_pagenum_link(2)`). JS now regex-replaces the page
+  number in the template URL, supporting both pretty (`/page/N/`) and plain (`?paged=N`)
+  permalink structures reliably. Falls back to constructing the URL from `location.href`.
+- **`data-current-page` respected by JS** — infinite scroll reads the actual current
+  page from the data attribute (set by `get_query_var('paged')`), so landing on a paged
+  URL directly starts fetching from the next correct page.
+- Hero and topics sections skipped on paged requests (`is_paged()`) — keeps server
+  response lean when JS fetches page 2+ for infinite scroll.
+- Theme version bumped to `1.4.0`.
+
+## [1.3.1] — 2026-06-17
+
 ## [1.3.0] — 2026-06-17
 
 ### Added

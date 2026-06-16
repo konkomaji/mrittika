@@ -133,17 +133,25 @@
 
 		if (grid && sentinel) {
 			var maxPages  = parseInt(grid.getAttribute('data-max-pages'), 10) || 1;
-			var curPage   = 1;
+			var curPage   = parseInt(grid.getAttribute('data-current-page'), 10) || 1;
 			var fetching  = false;
 
 			function getNextUrl(page) {
-				var base = grid.getAttribute('data-base-url') || window.location.origin + '/';
-				// WordPress paged URL: /?paged=N or /page/N/ depending on permalink structure
-				if (base.indexOf('?') !== -1) {
-					return base + '&paged=' + page;
+				var tmpl = grid.getAttribute('data-page-url') || '';
+				// Pretty permalinks: /page/2/ pattern
+				if (/\/page\/\d+\//.test(tmpl)) {
+					return tmpl.replace(/\/page\/\d+\//, '/page/' + page + '/');
 				}
-				// Try /page/N/ structure first (pretty permalinks)
-				return base.replace(/\/?$/, '') + '/page/' + page + '/';
+				// Plain permalinks: ?paged=2 or &paged=2 pattern
+				if (/[?&]paged=\d+/.test(tmpl)) {
+					return tmpl.replace(/([?&]paged=)\d+/, '$1' + page);
+				}
+				// Fallback: strip any existing /page/N/ and append
+				var base = window.location.href
+					.replace(/[?#].*$/, '')
+					.replace(/\/page\/\d+\/?$/, '')
+					.replace(/\/?$/, '/');
+				return base + 'page/' + page + '/';
 			}
 
 			function appendCards(html) {
@@ -208,7 +216,7 @@
 		document.querySelectorAll('.cat-cube[data-cat-nav]').forEach(function(cube) {
 			cube.addEventListener('click', function(e) {
 				var href = cube.getAttribute('href');
-				if (!href) return;
+				if (!href || cube.getAttribute('aria-hidden') === 'true') return;
 				if (document.startViewTransition) {
 					e.preventDefault();
 					document.startViewTransition(function() {
@@ -218,5 +226,16 @@
 				// else: follow link normally
 			});
 		});
+
+		// --- Topics marquee: pause on touch, resume on release ---
+		var catTrack = document.getElementById('cat-cubes-track');
+		if (catTrack) {
+			catTrack.addEventListener('touchstart', function() {
+				catTrack.classList.add('is-paused');
+			}, { passive: true });
+			catTrack.addEventListener('touchend', function() {
+				catTrack.classList.remove('is-paused');
+			}, { passive: true });
+		}
 	});
 })();
