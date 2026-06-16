@@ -29,6 +29,14 @@ function mrittika_default_options() {
 		'show_share'           => true,
 		'show_toc'             => true,
 		'footer_text'          => '',
+		// Homepage.
+		'home_show_hero'       => true,
+		'home_hero_count'      => 3,        // featured posts in the hero (1–5).
+		'home_show_topics'     => true,
+		'home_topics_count'    => 24,       // categories shown in the slider (4–40).
+		'home_topics_title'    => '',       // blank → "Explore our Topics".
+		'home_start_title'     => '',       // blank → "Start to Read".
+		'home_show_archives'   => true,
 		// Design.
 		'default_scheme'       => 'auto',   // auto|light|dark.
 		'accent_mode'          => 'mono',   // mono only (brand constraint), reserved.
@@ -101,10 +109,17 @@ function mrittika_sanitize_options( $input ) {
 		'show_share', 'show_toc', 'adsense_auto_ads', 'seo_enable', 'defer_scripts',
 		'remove_emoji', 'lazy_iframes', 'sec_headers', 'sec_disable_xmlrpc',
 		'sec_block_user_enum', 'sec_hide_version', 'sec_comment_links',
+		'home_show_hero', 'home_show_topics', 'home_show_archives',
 	);
 	foreach ( $bools as $b ) {
 		$out[ $b ] = ! empty( $input[ $b ] );
 	}
+
+	// Homepage numeric + text.
+	$out['home_topics_count'] = max( 4, min( 40, absint( $input['home_topics_count'] ?? 24 ) ) );
+	$out['home_hero_count']   = max( 1, min( 5, absint( $input['home_hero_count'] ?? 3 ) ) );
+	$out['home_topics_title'] = sanitize_text_field( $input['home_topics_title'] ?? '' );
+	$out['home_start_title']  = sanitize_text_field( $input['home_start_title'] ?? '' );
 
 	// Enums.
 	$out['default_scheme'] = in_array( ( $input['default_scheme'] ?? '' ), array( 'auto', 'light', 'dark' ), true ) ? $input['default_scheme'] : 'auto';

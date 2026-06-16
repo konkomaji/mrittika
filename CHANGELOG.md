@@ -7,6 +7,42 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.5.0] — 2026-06-17
+
+### Added
+- **"Explore our Topics" is now a real slider** — drag with the mouse on desktop,
+  swipe with a finger on mobile (native momentum scroll, `touch-action: pan-x`).
+  Replaces the auto-marquee. Edge-fade mask, snap points, grab cursor, wheel-to-horizontal,
+  and a drag-vs-click guard so a drag never triggers navigation. Honours
+  `prefers-reduced-motion`.
+- **Homepage settings tab** — toggle the hero, topics slider, and archives button; set
+  hero post count (1–5) and topics count (4–40); rename the "Explore our Topics" and
+  "Start to Read" headings. All dynamic, no code.
+- **Tools settings tab** — one-click **Regenerate thumbnails** (`inc/admin/thumbnails.php`).
+  Counts image attachments, then rebuilds each one's metadata over AJAX, one image per
+  request with a live progress bar, so it never hits the PHP time limit. Capability- and
+  nonce-checked.
+- Topics slider shows **top-level (parent) categories only**.
+
+### Changed
+- **Hero posts are de-duplicated from the grid** — the latest posts featured in the hero
+  are skipped in "Start to Read", so no post renders twice on page 1.
+- **Paginated canonical URLs** — page 2+ of the blog home, archives, and search now
+  self-reference instead of pointing back to page 1 (was hiding that content from Bing/Google).
+- Theme version bumped to `1.5.0`.
+
+### Fixed
+- **Bing Webmaster Guidelines compliance** — removed the duplicated `aria-hidden` topic
+  links (hidden/duplicate content) by switching to a single-set slider; added a crawlable
+  paginated fallback (`the_posts_pagination`) to the infinite-scroll home that is hidden
+  only after JS engages; hardened category/term canonical against `WP_Error`.
+- **Article schema author was empty** — `get_the_author()` runs outside the loop on
+  `wp_head`; now resolves the author from the post's `post_author` ID.
+
+### Removed
+- Dead code: the unused `mrittika_read_more_link()` helper and the no-op
+  `mrittika_clean_excerpt` excerpt filter (one fewer filter on every excerpt).
+
 ## [1.4.0] — 2026-06-17
 
 ### Changed
@@ -31,6 +67,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Theme version bumped to `1.4.0`.
 
 ## [1.3.1] — 2026-06-17
+
+### Changed
+- **404 page palette** now matches the site's monochrome system (the warm West-Bengal
+  accents stay confined to the SVG art).
+- **Page template** rebuilt: optional full-width hero image with gradient overlay and
+  overlaid title, or a clean standfirst header when there's no featured image.
+
+### Fixed
+- Breadcrumb labels truncate to 28 chars; page ancestor trail capped at two levels;
+  added a slide-in animation.
 
 ## [1.3.0] — 2026-06-17
 
@@ -161,7 +207,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Data-table styling tuned for property price guides and indices.
 - GPL-2.0-or-later, translation-ready (`mrittika` text domain).
 
-[Unreleased]: https://github.com/konkomaji/mrittika/compare/v1.3.0...HEAD
+[Unreleased]: https://github.com/konkomaji/mrittika/compare/v1.5.0...HEAD
+[1.5.0]: https://github.com/konkomaji/mrittika/compare/v1.4.0...v1.5.0
+[1.4.0]: https://github.com/konkomaji/mrittika/compare/v1.3.1...v1.4.0
+[1.3.1]: https://github.com/konkomaji/mrittika/compare/v1.3.0...v1.3.1
 [1.3.0]: https://github.com/konkomaji/mrittika/compare/v1.2.0...v1.3.0
 [1.2.0]: https://github.com/konkomaji/mrittika/compare/v1.1.1...v1.2.0
 [1.1.1]: https://github.com/konkomaji/mrittika/compare/v1.1.0...v1.1.1

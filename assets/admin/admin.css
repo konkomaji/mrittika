@@ -44,3 +44,10 @@
 .m-image-field .button { margin-right: 6px; }
 
 .mrittika-form .m-save { border-radius: 999px !important; padding: 4px 22px !important; margin-top: 20px; }
+
+/* Tools: regenerate thumbnails */
+.m-tool-card { border: 1px solid #e2e2e2; border-radius: 14px; padding: 18px 20px; margin: 8px 0 4px; background: #fafafa; }
+.m-tool-card h3 { margin: 0 0 6px; font-size: 15px; }
+.m-regen-status { margin-left: 12px; font-size: 13px; color: #555; vertical-align: middle; }
+.m-regen-bar { height: 8px; background: #e6e6e6; border-radius: 999px; overflow: hidden; margin-top: 14px; }
+.m-regen-fill { display: block; width: 0; height: 100%; background: #111; border-radius: 999px; transition: width 200ms ease; }

@@ -21,8 +21,19 @@ gray — in the spirit of editorial blogs from Google, Apple, and Bloomberg.
   disable for max speed / privacy.
 - **Light / dark mode** — follows the device, with a persisted manual toggle and no
   flash of the wrong theme on load.
-- **Dedicated settings dashboard** — a tabbed admin page (General · Design · Ads · SEO ·
-  Performance · Security) backed by the Settings API; no code needed to configure.
+- **Dedicated settings dashboard** — a tabbed admin page (General · Homepage · Design · Ads ·
+  SEO · Performance · Security · Tools) backed by the Settings API; no code needed to configure.
+- **Dynamic homepage controls** — toggle the featured hero, the "Explore our Topics"
+  slider, and the "Our Archives" button; set the number of hero posts and topics, and
+  rename the section headings — all from the **Homepage** tab.
+- **Explore our Topics slider** — a draggable (mouse) / swipeable (touch) strip of
+  top-level categories with optional per-category images; fully crawlable, no hidden duplicates.
+- **Infinite-scroll blog home** — loads every published post as you scroll, with a
+  progressively-enhanced, crawlable paginated fallback for search engines.
+- **FAQ builder** — a repeatable per-post metabox (question + answer + optional AI-citation),
+  an M3 Expressive accordion on the front end, and automatic `FAQPage` JSON-LD.
+- **One-click thumbnail regeneration** — rebuild every image to the theme's 3:2 crops and
+  800×800 category tiles from **Tools**, batched so it never times out.
 - **Google AdSense ready** — validated Publisher ID, optional Auto Ads, four policy-safe
   ad slots (after-header, in-content, after-post, sidebar), labeled containers, virtual
   `/ads.txt`. Ads never render inside navigation.
@@ -64,10 +75,13 @@ git clone https://github.com/konkomaji/mrittika.git
 
 1. **Appearance → Menus** — assign menus to *Primary*, *Topics / Categories Bar*,
    *Footer*, and *Social Links*.
-2. **Mrittika** (admin menu) — the dedicated settings dashboard. Configure design,
-   AdSense, SEO, performance, and security across the six tabs.
+2. **Mrittika** (admin menu) — the dedicated settings dashboard. Configure homepage,
+   design, AdSense, SEO, performance, and security across the eight tabs.
 3. **Settings → Reading** — set a static front page or use the latest-posts blog home.
-4. **Widgets** — populate the main sidebar and up to four footer columns.
+4. **Posts → Categories** — optionally upload an 800×800 image per category for the
+   Explore Topics slider.
+5. **Mrittika → Tools** — after changing image sizes, run **Regenerate thumbnails** once.
+6. **Widgets** — populate the main sidebar and up to four footer columns.
 
 ## Project structure
 
@@ -77,8 +91,8 @@ mrittika/
 ├── theme.json             Block editor settings & styles (v3)
 ├── functions.php          Loads inc/ modules
 ├── inc/                   options, setup, enqueue, template tags, SEO, schema, breadcrumbs,
-│                          blocks, security, ads, customizer, widgets
-│   └── admin/settings.php dedicated tabbed settings dashboard
+│                          blocks, security, ads, customizer, widgets, faq
+│   └── admin/             settings.php (tabbed dashboard), thumbnails.php (regen tool)
 ├── template-parts/        content cards, single, search, author bio, related posts
 ├── assets/css/            material-tokens.css, main.css, editor.css
 ├── assets/admin/          admin.css, admin.js (settings page)

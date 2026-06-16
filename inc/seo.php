@@ -137,11 +137,18 @@ if ( ! function_exists( 'mrittika_canonical_url' ) ) {
 	 * @return string
 	 */
 	function mrittika_canonical_url() {
+		$paged = (int) get_query_var( 'paged' );
+		if ( $paged > 1 && ( is_home() || is_archive() || is_search() ) ) {
+			$link = get_pagenum_link( $paged );
+			return $link ? $link : '';
+		}
 		if ( is_singular() ) {
 			return get_permalink();
 		}
 		if ( is_category() || is_tag() || is_tax() ) {
-			return get_term_link( get_queried_object() );
+			$term = get_queried_object();
+			$link = ( $term && ! is_wp_error( $term ) ) ? get_term_link( $term ) : '';
+			return is_wp_error( $link ) ? '' : $link;
 		}
 		if ( is_author() ) {
 			return get_author_posts_url( get_queried_object_id() );

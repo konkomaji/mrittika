@@ -52,26 +52,6 @@ function mrittika_excerpt_more( $more ) {
 add_filter( 'excerpt_more', 'mrittika_excerpt_more' );
 
 /**
- * Read-more link appended to excerpts on archives.
- */
-function mrittika_read_more_link() {
-	return sprintf(
-		' <a class="read-more" href="%1$s">%2$s<span class="screen-reader-text"> %3$s</span></a>',
-		esc_url( get_permalink() ),
-		esc_html__( 'Read more', 'mrittika' ),
-		esc_html( get_the_title() )
-	);
-}
-
-/**
- * Make all post excerpts strip shortcodes cleanly.
- */
-function mrittika_clean_excerpt( $text ) {
-	return $text;
-}
-add_filter( 'get_the_excerpt', 'mrittika_clean_excerpt' );
-
-/**
  * Slightly trim WP head: remove emoji bloat, shortlink, wlwmanifest.
  */
 function mrittika_head_cleanup() {

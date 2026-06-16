@@ -12,6 +12,7 @@ $max_pages  = (int) $wp_query->max_num_pages;
 $cur_page   = max( 1, (int) get_query_var( 'paged' ) );
 // Page-2 URL template: JS replaces the "2" with the desired page number.
 $page_url_t = esc_url( get_pagenum_link( 2 ) );
+$hero_ids   = array(); // Posts shown in the hero — skipped in the grid to avoid duplicates.
 ?>
 
 <main id="primary" class="site-main">
@@ -20,11 +21,12 @@ $page_url_t = esc_url( get_pagenum_link( 2 ) );
 
 	<?php if ( ! is_paged() ) : ?>
 
-	<!-- ── 1. Magazine hero: latest 3 posts (own query, page 1 only) ── -->
-	<?php
+	<!-- ── 1. Magazine hero: latest N posts (own query, page 1 only) ── -->
+	<?php if ( mrittika_get_option( 'home_show_hero', true ) ) :
 	$hero_q = new WP_Query( array(
-		'posts_per_page'      => 3,
+		'posts_per_page'      => (int) mrittika_get_option( 'home_hero_count', 3 ),
 		'ignore_sticky_posts' => true,
+		'no_found_rows'       => true,
 	) );
 	if ( $hero_q->have_posts() ) :
 	?>
@@ -33,6 +35,7 @@ $page_url_t = esc_url( get_pagenum_link( 2 ) );
 		$h = 0;
 		while ( $hero_q->have_posts() ) :
 			$hero_q->the_post();
+			$hero_ids[] = get_the_ID();
 			$variant = ( 0 === $h ) ? 'feature' : 'secondary';
 			set_query_var( 'mrittika_card_variant', $variant );
 			if ( 1 === $h ) {
@@ -48,16 +51,17 @@ $page_url_t = esc_url( get_pagenum_link( 2 ) );
 		?>
 	</section>
 	<?php endif; ?>
+	<?php endif; // home_show_hero ?>
 
-	<!-- ── 2. Explore our Topics — horizontal marquee ─────────── -->
+	<!-- ── 2. Explore our Topics — horizontal slider ──────────── -->
 	<?php
-	$explore_cats = get_categories( array(
+	$explore_cats = mrittika_get_option( 'home_show_topics', true ) ? get_categories( array(
 		'orderby'    => 'count',
 		'order'      => 'DESC',
 		'hide_empty' => true,
-		'number'     => 24,
+		'number'     => (int) mrittika_get_option( 'home_topics_count', 24 ),
 		'parent'     => 0,
-	) );
+	) ) : array();
 
 	$wb_palette = array(
 		array( 'from' => '#C4622D', 'to' => '#8B4513' ),
@@ -76,17 +80,19 @@ $page_url_t = esc_url( get_pagenum_link( 2 ) );
 
 		<div class="topics-explore-header wrap">
 			<h2 class="topics-explore-title" id="topics-explore-heading">
-				<?php esc_html_e( 'Explore our Topics', 'mrittika' ); ?>
+				<?php
+				$topics_title = mrittika_get_option( 'home_topics_title', '' );
+				echo esc_html( $topics_title ? $topics_title : __( 'Explore our Topics', 'mrittika' ) );
+				?>
 			</h2>
 			<p class="topics-explore-lead">
 				<?php esc_html_e( 'Browse stories by subject', 'mrittika' ); ?>
 			</p>
 		</div>
 
-		<!-- Marquee strip: items duplicated for seamless infinite loop -->
-		<div class="topics-scroll-outer">
+		<!-- Draggable / swipeable slider strip (single set, fully crawlable) -->
+		<div class="topics-scroll-outer" role="region" aria-label="<?php esc_attr_e( 'Topics', 'mrittika' ); ?>" tabindex="0">
 			<div class="cat-cubes-track" id="cat-cubes-track">
-				<?php for ( $rep = 0; $rep < 2; $rep++ ) : ?>
 				<?php foreach ( $explore_cats as $cat ) :
 					$palette_item = $wb_palette[ $cat->term_id % count( $wb_palette ) ];
 					$img_url      = mrittika_get_cat_image_url( $cat->term_id );
@@ -101,7 +107,6 @@ $page_url_t = esc_url( get_pagenum_link( 2 ) );
 					href="<?php echo esc_url( get_category_link( $cat->term_id ) ); ?>"
 					aria-label="<?php echo esc_attr( $cat->name . ' — ' . $count ); ?>"
 					data-cat-nav="1"
-					<?php if ( 1 === $rep ) : ?>aria-hidden="true" tabindex="-1"<?php endif; ?>
 				>
 					<?php if ( $img_url ) : ?>
 					<img
@@ -126,7 +131,6 @@ $page_url_t = esc_url( get_pagenum_link( 2 ) );
 					</div>
 				</a>
 				<?php endforeach; ?>
-				<?php endfor; ?>
 			</div>
 		</div>
 
@@ -141,7 +145,10 @@ $page_url_t = esc_url( get_pagenum_link( 2 ) );
 
 			<?php if ( ! is_paged() ) : ?>
 			<header class="section-heading home-start-heading">
-				<h2><?php esc_html_e( 'Start to Read', 'mrittika' ); ?></h2>
+				<h2><?php
+				$start_title = mrittika_get_option( 'home_start_title', '' );
+				echo esc_html( $start_title ? $start_title : __( 'Start to Read', 'mrittika' ) );
+				?></h2>
 			</header>
 			<?php endif; ?>
 
@@ -155,6 +162,10 @@ $page_url_t = esc_url( get_pagenum_link( 2 ) );
 				<?php
 				while ( have_posts() ) :
 					the_post();
+					// Skip posts already featured in the hero (page 1 only).
+					if ( ! empty( $hero_ids ) && in_array( get_the_ID(), $hero_ids, true ) ) {
+						continue;
+					}
 					set_query_var( 'mrittika_card_variant', 'card' );
 					get_template_part( 'template-parts/content', 'card' );
 				endwhile;
@@ -172,6 +183,11 @@ $page_url_t = esc_url( get_pagenum_link( 2 ) );
 				<a href="#primary"><?php esc_html_e( 'Back to top', 'mrittika' ); ?></a>
 			</div>
 
+			<!-- Crawlable paginated links (Bing/Google) — hidden once JS infinite scroll engages -->
+			<nav class="home-pagination" id="home-pagination" aria-label="<?php esc_attr_e( 'Older stories', 'mrittika' ); ?>">
+				<?php mrittika_pagination(); ?>
+			</nav>
+
 		</div>
 	</div>
 
@@ -182,10 +198,11 @@ $page_url_t = esc_url( get_pagenum_link( 2 ) );
 </main>
 
 <!-- ── Our Archives ──────────────────────────────────────── -->
+<?php if ( mrittika_get_option( 'home_show_archives', true ) && have_posts() ) : ?>
 <div class="home-archives-row">
 	<div class="home-archives-inner wrap">
 		<p class="home-archives-label"><?php esc_html_e( 'Looking for older stories?', 'mrittika' ); ?></p>
-		<a class="archives-btn" href="<?php echo esc_url( get_year_link( gmdate( 'Y' ) ) ); ?>">
+		<a class="archives-btn" href="<?php echo esc_url( get_year_link( (int) gmdate( 'Y' ) ) ); ?>">
 			<?php esc_html_e( 'Our Archives', 'mrittika' ); ?>
 			<svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
 				<path d="M4 10h12M11 5l5 5-5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
@@ -193,5 +210,6 @@ $page_url_t = esc_url( get_pagenum_link( 2 ) );
 		</a>
 	</div>
 </div>
+<?php endif; ?>
 
 <?php get_footer(); ?>

@@ -201,7 +201,12 @@
 					});
 			}
 
+			// Progressive enhancement: JS takes over, so hide the crawlable
+			// pagination links (they remain in the HTML for search engines).
+			var pager = document.getElementById('home-pagination');
+
 			if (maxPages > 1 && 'IntersectionObserver' in window) {
+				if (pager) { pager.hidden = true; }
 				var scrollObserver = new IntersectionObserver(function(entries) {
 					if (entries[0].isIntersecting) { loadNextPage(); }
 				}, { rootMargin: '0px 0px 400px 0px' });
@@ -212,30 +217,63 @@
 			}
 		}
 
-		// --- Category cube: View Transitions navigation ---
-		document.querySelectorAll('.cat-cube[data-cat-nav]').forEach(function(cube) {
-			cube.addEventListener('click', function(e) {
+		// --- Topics slider: drag-to-scroll (mouse) + native touch swipe ---
+		var slider = document.querySelector('.topics-scroll-outer');
+		var dragged = false; // true while a mouse drag is in progress (suppresses click nav)
+		if (slider) {
+			var isDown = false, startX = 0, startScroll = 0;
+
+			slider.addEventListener('pointerdown', function (e) {
+				// Touch / pen use the browser's native momentum scroll (touch-action: pan-x).
+				if (e.pointerType !== 'mouse') { return; }
+				isDown = true;
+				dragged = false;
+				startX = e.clientX;
+				startScroll = slider.scrollLeft;
+				slider.classList.add('is-dragging');
+				try { slider.setPointerCapture(e.pointerId); } catch (err) {}
+			});
+
+			slider.addEventListener('pointermove', function (e) {
+				if (!isDown) { return; }
+				var walk = e.clientX - startX;
+				if (Math.abs(walk) > 4) { dragged = true; }
+				slider.scrollLeft = startScroll - walk;
+			});
+
+			var endDrag = function (e) {
+				if (!isDown) { return; }
+				isDown = false;
+				slider.classList.remove('is-dragging');
+				try { slider.releasePointerCapture(e.pointerId); } catch (err) {}
+			};
+			slider.addEventListener('pointerup', endDrag);
+			slider.addEventListener('pointercancel', endDrag);
+			slider.addEventListener('pointerleave', endDrag);
+
+			// Wheel: translate vertical wheel into horizontal scroll for trackpads/mice.
+			slider.addEventListener('wheel', function (e) {
+				if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+					slider.scrollLeft += e.deltaY;
+					e.preventDefault();
+				}
+			}, { passive: false });
+		}
+
+		// --- Category cube: View Transitions navigation (drag-aware) ---
+		document.querySelectorAll('.cat-cube[data-cat-nav]').forEach(function (cube) {
+			cube.addEventListener('click', function (e) {
+				if (dragged) { e.preventDefault(); return; } // was a drag, not a tap
 				var href = cube.getAttribute('href');
-				if (!href || cube.getAttribute('aria-hidden') === 'true') return;
+				if (!href) { return; }
 				if (document.startViewTransition) {
 					e.preventDefault();
-					document.startViewTransition(function() {
+					document.startViewTransition(function () {
 						window.location.assign(href);
 					});
 				}
 				// else: follow link normally
 			});
 		});
-
-		// --- Topics marquee: pause on touch, resume on release ---
-		var catTrack = document.getElementById('cat-cubes-track');
-		if (catTrack) {
-			catTrack.addEventListener('touchstart', function() {
-				catTrack.classList.add('is-paused');
-			}, { passive: true });
-			catTrack.addEventListener('touchend', function() {
-				catTrack.classList.remove('is-paused');
-			}, { passive: true });
-		}
 	});
 })();

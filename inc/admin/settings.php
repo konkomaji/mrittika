@@ -52,6 +52,17 @@ function mrittika_admin_assets() {
 	wp_enqueue_style( 'mrittika-admin', MRITTIKA_URI . '/assets/admin/admin.css', array(), MRITTIKA_VERSION );
 	wp_enqueue_media();
 	wp_enqueue_script( 'mrittika-admin', MRITTIKA_URI . '/assets/admin/admin.js', array( 'jquery' ), MRITTIKA_VERSION, true );
+	wp_localize_script( 'mrittika-admin', 'mrittikaAdmin', array(
+		'ajaxUrl'   => admin_url( 'admin-ajax.php' ),
+		'regenNonce'=> wp_create_nonce( 'mrittika_regen' ),
+		'i18n'      => array(
+			'counting' => __( 'Counting images…', 'mrittika' ),
+			'none'     => __( 'No images found to regenerate.', 'mrittika' ),
+			'done'     => __( 'Done. Regenerated %d image(s).', 'mrittika' ),
+			'working'  => __( 'Regenerating %1$d of %2$d…', 'mrittika' ),
+			'failed'   => __( 'Something went wrong. Check the browser console.', 'mrittika' ),
+		),
+	) );
 }
 
 /**
@@ -81,6 +92,20 @@ function mrittika_text( $key, $label, $placeholder = '', $desc = '' ) {
 		esc_attr( mrittika_field_name( $key ) ),
 		esc_attr( $val ),
 		esc_attr( $placeholder ),
+		$desc ? '<p class="m-desc">' . esc_html( $desc ) . '</p>' : ''
+	);
+}
+
+function mrittika_number( $key, $label, $min = 0, $max = 100, $desc = '' ) {
+	$val = mrittika_get_option( $key );
+	printf(
+		'<div class="m-field"><label for="%1$s"><strong>%2$s</strong></label><input type="number" id="%1$s" name="%3$s" value="%4$s" min="%5$d" max="%6$d" step="1" class="small-text">%7$s</div>',
+		esc_attr( $key ),
+		esc_html( $label ),
+		esc_attr( mrittika_field_name( $key ) ),
+		esc_attr( $val ),
+		(int) $min,
+		(int) $max,
 		$desc ? '<p class="m-desc">' . esc_html( $desc ) . '</p>' : ''
 	);
 }
@@ -134,11 +159,13 @@ function mrittika_render_settings_page() {
 	}
 	$tabs = array(
 		'general'     => __( 'General', 'mrittika' ),
+		'homepage'    => __( 'Homepage', 'mrittika' ),
 		'design'      => __( 'Design', 'mrittika' ),
 		'ads'         => __( 'Ads', 'mrittika' ),
 		'seo'         => __( 'SEO', 'mrittika' ),
 		'performance' => __( 'Performance', 'mrittika' ),
 		'security'    => __( 'Security', 'mrittika' ),
+		'tools'       => __( 'Tools', 'mrittika' ),
 	);
 	?>
 	<div class="wrap mrittika-admin">
@@ -171,6 +198,21 @@ function mrittika_render_settings_page() {
 				mrittika_checkbox( 'show_share', __( 'Show share buttons', 'mrittika' ) );
 				mrittika_textarea( 'footer_text', __( 'Footer text', 'mrittika' ), __( 'Leave blank for the default copyright line. HTML allowed.', 'mrittika' ), 3 );
 				?>
+			</section>
+
+			<!-- HOMEPAGE -->
+			<section class="m-panel" data-panel="homepage">
+				<h2><?php esc_html_e( 'Homepage', 'mrittika' ); ?></h2>
+				<?php
+				mrittika_checkbox( 'home_show_hero', __( 'Show featured hero', 'mrittika' ), __( 'Magazine hero of the latest posts at the top of the blog home.', 'mrittika' ) );
+				mrittika_number( 'home_hero_count', __( 'Hero posts', 'mrittika' ), 1, 5, __( 'How many latest posts to feature (1–5).', 'mrittika' ) );
+				mrittika_checkbox( 'home_show_topics', __( 'Show "Explore our Topics" slider', 'mrittika' ), __( 'Draggable / swipeable strip of top-level categories.', 'mrittika' ) );
+				mrittika_number( 'home_topics_count', __( 'Topics in slider', 'mrittika' ), 4, 40, __( 'Maximum categories to display (4–40).', 'mrittika' ) );
+				mrittika_text( 'home_topics_title', __( 'Topics heading', 'mrittika' ), __( 'Explore our Topics', 'mrittika' ), __( 'Leave blank for the default.', 'mrittika' ) );
+				mrittika_text( 'home_start_title', __( 'Stories heading', 'mrittika' ), __( 'Start to Read', 'mrittika' ), __( 'Heading above the infinite-scroll grid. Blank for default.', 'mrittika' ) );
+				mrittika_checkbox( 'home_show_archives', __( 'Show "Our Archives" button', 'mrittika' ), __( 'Links to the current-year archive before the footer.', 'mrittika' ) );
+				?>
+				<p class="m-note"><?php esc_html_e( 'The stories grid loads every published post via infinite scroll, with a crawlable paginated fallback for search engines.', 'mrittika' ); ?></p>
 			</section>
 
 			<!-- DESIGN -->
@@ -240,6 +282,23 @@ function mrittika_render_settings_page() {
 				mrittika_checkbox( 'sec_comment_links', __( 'Harden comment links (nofollow ugc noopener)', 'mrittika' ) );
 				?>
 				<p class="m-note"><?php esc_html_e( 'These are theme-level hardening defaults. They complement — not replace — a dedicated security plugin and proper server configuration.', 'mrittika' ); ?></p>
+			</section>
+
+			<!-- TOOLS -->
+			<section class="m-panel" data-panel="tools">
+				<h2><?php esc_html_e( 'Tools', 'mrittika' ); ?></h2>
+
+				<div class="m-tool-card">
+					<h3><?php esc_html_e( 'Regenerate thumbnails', 'mrittika' ); ?></h3>
+					<p class="m-desc"><?php esc_html_e( 'Rebuild every image so the theme\'s 3:2 crops and 800×800 category tiles exist for older uploads. Runs one image at a time — safe to leave open; do not close the tab until it finishes.', 'mrittika' ); ?></p>
+					<p>
+						<button type="button" class="button button-primary" id="mrittika-regen-start"><?php esc_html_e( 'Start regeneration', 'mrittika' ); ?></button>
+						<span class="m-regen-status" id="mrittika-regen-status" aria-live="polite"></span>
+					</p>
+					<div class="m-regen-bar" id="mrittika-regen-bar" hidden><span class="m-regen-fill" id="mrittika-regen-fill"></span></div>
+				</div>
+
+				<p class="m-note"><?php esc_html_e( 'After changing image sizes you only need to run this once. New uploads are cropped automatically.', 'mrittika' ); ?></p>
 			</section>
 
 			<?php submit_button( __( 'Save settings', 'mrittika' ), 'primary m-save' ); ?>

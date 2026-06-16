@@ -72,8 +72,9 @@ function mrittika_schema_article() {
 		return;
 	}
 
-	$post_id = get_the_ID();
-	$image   = '';
+	$post_id   = get_the_ID();
+	$author_id = (int) get_post_field( 'post_author', $post_id );
+	$image     = '';
 	if ( has_post_thumbnail() ) {
 		$src = wp_get_attachment_image_src( get_post_thumbnail_id(), 'mrittika-wide' );
 		if ( $src ) {
@@ -92,8 +93,8 @@ function mrittika_schema_article() {
 		'dateModified'     => get_the_modified_date( DATE_W3C ),
 		'author'           => array(
 			'@type' => 'Person',
-			'name'  => get_the_author(),
-			'url'   => get_author_posts_url( get_the_author_meta( 'ID' ) ),
+			'name'  => get_the_author_meta( 'display_name', $author_id ),
+			'url'   => get_author_posts_url( $author_id ),
 		),
 		'publisher'        => array(
 			'@type' => 'Organization',

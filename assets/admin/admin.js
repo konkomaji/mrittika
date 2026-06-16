@@ -51,5 +51,61 @@
 			$field.find('.m-image-url').val('');
 			$field.find('.m-image-preview').empty();
 		});
+
+		// --- Tools: regenerate thumbnails (batched, one image per request) ---
+		var cfg = window.mrittikaAdmin || {};
+		var i18n = cfg.i18n || {};
+		var $btn = $('#mrittika-regen-start');
+		var $status = $('#mrittika-regen-status');
+		var $bar = $('#mrittika-regen-bar');
+		var $fill = $('#mrittika-regen-fill');
+
+		function fmt(str, a, b) {
+			return String(str).replace('%1$d', a).replace('%2$d', b).replace('%d', a);
+		}
+
+		$btn.on('click', function () {
+			$btn.prop('disabled', true);
+			$status.text(i18n.counting || 'Counting…');
+			$bar.prop('hidden', false);
+			$fill.css('width', '0%');
+
+			$.post(cfg.ajaxUrl, { action: 'mrittika_regen_count', nonce: cfg.regenNonce })
+				.done(function (res) {
+					if (!res || !res.success || !res.data || !res.data.ids.length) {
+						$status.text(i18n.none || 'No images found.');
+						$btn.prop('disabled', false);
+						$bar.prop('hidden', true);
+						return;
+					}
+					runQueue(res.data.ids);
+				})
+				.fail(function () {
+					$status.text(i18n.failed || 'Failed.');
+					$btn.prop('disabled', false);
+				});
+		});
+
+		function runQueue(ids) {
+			var total = ids.length, done = 0;
+
+			function next() {
+				if (!ids.length) {
+					$fill.css('width', '100%');
+					$status.text(fmt(i18n.done || 'Done. %d image(s).', done));
+					$btn.prop('disabled', false);
+					return;
+				}
+				var id = ids.shift();
+				$.post(cfg.ajaxUrl, { action: 'mrittika_regen_one', nonce: cfg.regenNonce, id: id })
+					.always(function () {
+						done++;
+						$fill.css('width', Math.round((done / total) * 100) + '%');
+						$status.text(fmt(i18n.working || 'Regenerating %1$d of %2$d…', done, total));
+						next();
+					});
+			}
+			next();
+		}
 	});
 })(jQuery);
